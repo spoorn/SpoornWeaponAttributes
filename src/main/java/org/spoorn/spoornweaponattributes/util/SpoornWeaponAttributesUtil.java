@@ -4,6 +4,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -11,7 +12,7 @@ import java.util.Random;
  */
 public final class SpoornWeaponAttributesUtil {
 
-    public static final String NBT_KEY = "spoornweaponattributes";
+    public static final String NBT_KEY = "spoornWeaponAttributes";
     public static final String BONUS_DAMAGE = "bonusDmg";
     public static final String CRIT_CHANCE = "critChance";
     public static final Random RANDOM = new Random();
@@ -24,6 +25,17 @@ public final class SpoornWeaponAttributesUtil {
         NbtCompound res = new NbtCompound();
         root.put(NBT_KEY, res);
         return res;
+    }
+
+    public static Optional<NbtCompound> getSWANbtIfPresent(ItemStack stack) {
+        if (stack.hasTag()) {
+            NbtCompound root = stack.getTag();
+
+            if (root != null && root.contains(SpoornWeaponAttributesUtil.NBT_KEY)) {
+                return Optional.of(root.getCompound(SpoornWeaponAttributesUtil.NBT_KEY));
+            }
+        }
+        return Optional.empty();
     }
 
     public static boolean shouldEnable(float chance) {

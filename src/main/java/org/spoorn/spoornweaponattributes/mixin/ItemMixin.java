@@ -29,7 +29,7 @@ public class ItemMixin {
         // TODO: compat with Spoorn Loot
         if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack)) {
             NbtCompound root = stack.getOrCreateTag();
-            if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY)) {
+            if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains("spoornConfig")) {
                 NbtCompound nbt = SpoornWeaponAttributesUtil.createAttributesSubNbt(root);
                 //System.out.println("Initial Nbt: " + nbt);
 

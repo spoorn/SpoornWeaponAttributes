@@ -1,0 +1,7 @@
+{
+  "swa.tooltip.firedamage" : " Fire Damage",
+  "swa.tooltip.colddamage" : " Cold Damage",
+  "swa.tooltip.critchance" : " Crit Chance",
+  "swa.tooltip.lightningdamage" : " Lightning Damage",
+  "swa.tooltip.poisondamage" : " Poison Damage"
+}

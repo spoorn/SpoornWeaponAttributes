@@ -24,6 +24,7 @@ import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.util.Map.Entry;
+import java.util.Optional;
 
 @Mixin(PlayerEntity.class)
 public class PlayerEntityMixin {
@@ -37,36 +38,32 @@ public class PlayerEntityMixin {
 
         if ((instance instanceof ServerPlayerEntity) && (target instanceof LivingEntity)) {
             ItemStack mainItemStack = instance.getMainHandStack();
-            if (mainItemStack.hasTag()) {
-                NbtCompound root = mainItemStack.getTag();
+            Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(mainItemStack);
+            if (optNbt.isPresent()) {
+                NbtCompound nbt = optNbt.get();
+                for (Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
+                    String name = entry.getKey();
 
-                if (root != null && root.contains(SpoornWeaponAttributesUtil.NBT_KEY)) {
-                    NbtCompound nbt = root.getCompound(SpoornWeaponAttributesUtil.NBT_KEY);
-
-                    for (Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
-                        String name = entry.getKey();
-
-                        if (nbt.contains(name)) {
-                            NbtCompound subNbt = nbt.getCompound(name);
-                            switch (name) {
-                                case Attribute.CRIT_NAME:
-                                    // crit applies to final damage
-                                    break;
-                                case Attribute.FIRE_NAME:
-                                    f += handleFire(subNbt, instance, target);
-                                    break;
-                                case Attribute.COLD_NAME:
-                                    f += handleCold(subNbt, instance, target);
-                                    break;
-                                case Attribute.LIGHTNING_NAME:
-                                    f += handleLightning(subNbt, instance, target);
-                                    break;
-                                case Attribute.POISON_NAME:
-                                    f += handlePoison(subNbt, instance, target);
-                                    break;
-                                default:
-                                    // do nothing
-                            }
+                    if (nbt.contains(name)) {
+                        NbtCompound subNbt = nbt.getCompound(name);
+                        switch (name) {
+                            case Attribute.CRIT_NAME:
+                                // crit applies to final damage
+                                break;
+                            case Attribute.FIRE_NAME:
+                                f += handleFire(subNbt, instance, target);
+                                break;
+                            case Attribute.COLD_NAME:
+                                f += handleCold(subNbt, instance, target);
+                                break;
+                            case Attribute.LIGHTNING_NAME:
+                                f += handleLightning(subNbt, instance, target);
+                                break;
+                            case Attribute.POISON_NAME:
+                                f += handlePoison(subNbt, instance, target);
+                                break;
+                            default:
+                                // do nothing
                         }
                     }
                 }
@@ -84,16 +81,12 @@ public class PlayerEntityMixin {
         PlayerEntity player = (PlayerEntity) (Object) this;
         if ((player instanceof ServerPlayerEntity) && (instance instanceof LivingEntity)) {
             ItemStack mainItemStack = player.getMainHandStack();
-            if (mainItemStack.hasTag()) {
-                NbtCompound root = mainItemStack.getTag();
-
-                if (root != null && root.contains(SpoornWeaponAttributesUtil.NBT_KEY)) {
-                    NbtCompound nbt = root.getCompound(SpoornWeaponAttributesUtil.NBT_KEY);
-
-                    if (nbt.contains(Attribute.CRIT_NAME)) {
-                        NbtCompound subNbt = nbt.getCompound(Attribute.CRIT_NAME);
-                        amount = handleCrit(amount, subNbt, player, instance);
-                    }
+            Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(mainItemStack);
+            if (optNbt.isPresent()) {
+                NbtCompound nbt = optNbt.get();
+                if (nbt.contains(Attribute.CRIT_NAME)) {
+                    NbtCompound subNbt = nbt.getCompound(Attribute.CRIT_NAME);
+                    amount = handleCrit(amount, subNbt, player, instance);
                 }
             }
         }

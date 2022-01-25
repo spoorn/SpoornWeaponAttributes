@@ -3,7 +3,9 @@ package org.spoorn.spoornweaponattributes.att;
 import lombok.AllArgsConstructor;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -26,6 +28,7 @@ public class Attribute {
     public static Attribute POISON;
 
     public static Map<String, Attribute> VALUES = new HashMap<>();
+    public static List<String> TOOLTIPS = new ArrayList<>();
 
     public final String name;
     public final double chance;
@@ -41,5 +44,10 @@ public class Attribute {
         VALUES.put(COLD.name, COLD);
         VALUES.put(LIGHTNING.name, LIGHTNING);
         VALUES.put(POISON.name, POISON);
+        TOOLTIPS.add(FIRE.name);
+        TOOLTIPS.add(COLD.name);
+        TOOLTIPS.add(CRIT.name);
+        TOOLTIPS.add(LIGHTNING.name);
+        TOOLTIPS.add(POISON.name);
     }
 }

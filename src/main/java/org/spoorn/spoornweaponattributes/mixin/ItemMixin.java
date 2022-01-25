@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spoorn.spoornweaponattributes.Attribute;
+import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.config.attribute.*;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
@@ -68,7 +68,7 @@ public class ItemMixin {
     }
 
     /**
-     * We manually list all the handles here for lowest latency
+     * We manually list all the handles here for optimal latency
      */
 
     private void handleCrit(NbtCompound nbt) {

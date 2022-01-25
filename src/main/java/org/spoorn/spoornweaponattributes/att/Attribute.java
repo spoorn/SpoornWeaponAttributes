@@ -1,4 +1,4 @@
-package org.spoorn.spoornweaponattributes;
+package org.spoorn.spoornweaponattributes.att;
 
 import lombok.AllArgsConstructor;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
@@ -6,6 +6,9 @@ import org.spoorn.spoornweaponattributes.config.ModConfig;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Contains generic information of the attributes.
+ */
 @AllArgsConstructor
 public class Attribute {
 

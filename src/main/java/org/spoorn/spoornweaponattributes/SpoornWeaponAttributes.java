@@ -2,6 +2,7 @@ package org.spoorn.spoornweaponattributes;
 
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.ModInitializer;
+import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
 
 @Log4j2

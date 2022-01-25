@@ -4,8 +4,11 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 public class LightningConfig {
 
-    @Comment("Chance for a weapon to have lightning damage [0 = never, 1 = always] [default = 0.05]")
-    public double attributeChance = 0.05;
+    @Comment("Chance for a weapon to have lightning damage [0 = never, 1 = always] [default = 0.03]")
+    public double attributeChance = 0.03;
+
+    @Comment("Chance to strike the target with lightning [0 = no lightning strikes] [default = 0.5]")
+    public double lightningStrikeChance = 0.5;
 
     @Comment("Minimum bonus damage [default = 1.0]")
     public float minDamage = 1;

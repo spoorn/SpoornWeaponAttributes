@@ -8,6 +8,9 @@ public class CritConfig {
     @Comment("Chance for a weapon to have critical hit property [0 = never, 1 = always] [default = 0.1]")
     public double attributeChance = 0.1;
 
+    @Comment("Damage multiplier when critical hit [default = 2.5]")
+    public double critMultiplier = 2.5;
+
     @Comment("Minimum crit chance [min = 0, max = 100] [default = 20]")
     @ConfigEntry.BoundedDiscrete(min = 0L, max = 100L)
     public int minCritChance = 20;

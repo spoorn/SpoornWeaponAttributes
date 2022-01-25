@@ -7,6 +7,9 @@ public class PoisonConfig {
     @Comment("Chance for a weapon to have poison damage [0 = never, 1 = always] [default = 0.05]")
     public double attributeChance = 0.05;
 
+    @Comment("Duration in seconds to poison target [0 = don't poison] [default = 10]")
+    public int poisonDuration = 10;
+
     @Comment("Minimum bonus damage [default = 1.0]")
     public float minDamage = 1;
 

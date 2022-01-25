@@ -26,6 +26,10 @@ public final class SpoornWeaponAttributesUtil {
         return res;
     }
 
+    public static boolean shouldEnable(float chance) {
+        return (chance > 0) && (RANDOM.nextFloat() < chance);
+    }
+
     public static boolean shouldEnable(double chance) {
         return (chance > 0) && (RANDOM.nextDouble() < chance);
     }

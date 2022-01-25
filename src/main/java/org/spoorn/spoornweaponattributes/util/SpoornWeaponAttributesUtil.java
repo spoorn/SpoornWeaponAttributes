@@ -28,8 +28,8 @@ public final class SpoornWeaponAttributesUtil {
     }
 
     public static Optional<NbtCompound> getSWANbtIfPresent(ItemStack stack) {
-        if (stack.hasTag()) {
-            NbtCompound root = stack.getTag();
+        if (stack.hasNbt()) {
+            NbtCompound root = stack.getNbt();
 
             if (root != null && root.contains(SpoornWeaponAttributesUtil.NBT_KEY)) {
                 return Optional.of(root.getCompound(SpoornWeaponAttributesUtil.NBT_KEY));

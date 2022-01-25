@@ -28,7 +28,7 @@ public class ItemMixin {
     public void addCustomNbt(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
         // TODO: compat with Spoorn Loot
         if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack)) {
-            NbtCompound root = stack.getOrCreateTag();
+            NbtCompound root = stack.getOrCreateNbt();
             if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains("spoornConfig")) {
                 NbtCompound nbt = SpoornWeaponAttributesUtil.createAttributesSubNbt(root);
                 //System.out.println("Initial Nbt: " + nbt);

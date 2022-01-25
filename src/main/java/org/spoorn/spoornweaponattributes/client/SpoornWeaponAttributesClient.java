@@ -10,12 +10,14 @@ import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.*;
 import org.spoorn.spoornweaponattributes.att.Attribute;
-import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Log4j2
 @Environment(EnvType.CLIENT)

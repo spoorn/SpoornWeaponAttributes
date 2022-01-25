@@ -112,7 +112,7 @@ public class PlayerEntityMixin {
         int slowDuration = ModConfig.get().coldConfig.slowDuration;
         if (slowDuration > 0) {
             LivingEntity livingEntity = (LivingEntity) target;
-            livingEntity.applyStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * slowDuration, 2));
+            livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * slowDuration, 2));
         }
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);
@@ -138,7 +138,7 @@ public class PlayerEntityMixin {
         int poisonDuration = ModConfig.get().poisonConfig.poisonDuration;
         if (poisonDuration > 0) {
             LivingEntity livingEntity = (LivingEntity) target;
-            livingEntity.applyStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonDuration, 2));
+            livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonDuration, 2));
         }
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);

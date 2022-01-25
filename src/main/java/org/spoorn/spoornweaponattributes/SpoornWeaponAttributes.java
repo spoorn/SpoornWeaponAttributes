@@ -8,7 +8,7 @@ import org.spoorn.spoornweaponattributes.config.ModConfig;
 @Log4j2
 public class SpoornWeaponAttributes implements ModInitializer {
 
-    public static final String MODID = "SpoornWeaponAttributes";
+    public static final String MODID = "spoornweaponattributes";
 
     @Override
     public void onInitialize() {

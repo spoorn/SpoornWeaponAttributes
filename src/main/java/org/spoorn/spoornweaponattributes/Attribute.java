@@ -9,6 +9,13 @@ import java.util.Map;
 @AllArgsConstructor
 public class Attribute {
 
+    // WARNING: Changing the name in the static initialization will break existing Nbt data
+    public static final String CRIT_NAME = "CRIT";
+    public static final String FIRE_NAME = "FIRE";
+    public static final String COLD_NAME = "COLD";
+    public static final String LIGHTNING_NAME = "LIGHTNING";
+    public static final String POISON_NAME = "POISON";
+
     public static Attribute CRIT;
     public static Attribute FIRE;
     public static Attribute COLD;
@@ -17,17 +24,15 @@ public class Attribute {
 
     public static Map<String, Attribute> VALUES = new HashMap<>();
 
-    // WARNING: Changing the name in the static initialization will break existing Nbt data
     public final String name;
-    public final int chance;
-    public final boolean addsDirectDamage;
+    public final double chance;
 
     public static void init() {
-        CRIT = new Attribute("CRIT", ModConfig.get().critChanceChance, false);
-        FIRE = new Attribute("FIRE", ModConfig.get().fireDamageChance, true);
-        COLD = new Attribute("COLD", ModConfig.get().coldDamageChance, true);
-        LIGHTNING = new Attribute("LIGHTNING", ModConfig.get().lightningDamageChance, true);
-        POISON = new Attribute("POISON", ModConfig.get().poisonDamageChance, true);
+        CRIT = new Attribute(CRIT_NAME, ModConfig.get().critConfig.attributeChance);
+        FIRE = new Attribute(FIRE_NAME, ModConfig.get().fireConfig.attributeChance);
+        COLD = new Attribute(COLD_NAME, ModConfig.get().coldConfig.attributeChance);
+        LIGHTNING = new Attribute(LIGHTNING_NAME, ModConfig.get().lightningConfig.attributeChance);
+        POISON = new Attribute(POISON_NAME, ModConfig.get().poisonConfig.attributeChance);
         VALUES.put(CRIT.name, CRIT);
         VALUES.put(FIRE.name, FIRE);
         VALUES.put(COLD.name, COLD);

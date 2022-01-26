@@ -93,5 +93,22 @@
     "mean": 1,
     // Standard deviation for the distribution [default = 4]
     "standardDeviation": 4
+  },
+  // Lifesteal attribute config
+  "lifestealConfig": {
+    // Chance for a weapon to have lifesteal [0 = never, 1 = always] [default = 0.02]
+    "attributeChance": 0.02,
+    // Minimum lifesteal percentage [default = 1]
+    "minLifesteal": 1,
+    // Maximum lifesteal percentage [default = 100]
+    "maxLifesteal": 100,
+    /* True if damage should be calculated using a Gaussian distribution, else it will be a linearly random
+       value between the minDamage and maxDamage [default = true]
+    */
+    "useGaussian": true,
+    // Average lifesteal [default = 10]
+    "mean": 10,
+    // Standard deviation for the distribution [default = 10]
+    "standardDeviation": 10
   }
 }

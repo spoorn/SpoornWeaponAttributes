@@ -1,7 +1,6 @@
 package org.spoorn.spoornweaponattributes.mixin;
 
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.BONUS_DAMAGE;
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.CRIT_CHANCE;
+import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LightningEntity;
@@ -47,9 +46,6 @@ public class PlayerEntityMixin {
                     if (nbt.contains(name)) {
                         NbtCompound subNbt = nbt.getCompound(name);
                         switch (name) {
-                            case Attribute.CRIT_NAME:
-                                // crit applies to final damage
-                                break;
                             case Attribute.FIRE_NAME:
                                 f += handleFire(subNbt, instance, target);
                                 break;
@@ -63,6 +59,7 @@ public class PlayerEntityMixin {
                                 f += handlePoison(subNbt, instance, target);
                                 break;
                             default:
+                                // crit, lifesteal, and other attributes apply to final damage
                                 // do nothing
                         }
                     }
@@ -87,6 +84,11 @@ public class PlayerEntityMixin {
                 if (nbt.contains(Attribute.CRIT_NAME)) {
                     NbtCompound subNbt = nbt.getCompound(Attribute.CRIT_NAME);
                     amount = handleCrit(amount, subNbt, player, instance);
+                }
+
+                if (nbt.contains(Attribute.LIFESTEAL_NAME)) {
+                    NbtCompound subNbt = nbt.getCompound(Attribute.LIFESTEAL_NAME);
+                    amount = handleLifesteal(amount, subNbt, player, instance);
                 }
             }
         }
@@ -152,6 +154,14 @@ public class PlayerEntityMixin {
             if (SpoornWeaponAttributesUtil.shouldEnable(critChance)) {
                 return (float) (damage * ModConfig.get().critConfig.critMultiplier);
             }
+        }
+        return damage;
+    }
+
+    private float handleLifesteal(float damage, NbtCompound nbt, PlayerEntity player, Entity target) {
+        if (nbt.contains(LIFESTEAL)) {
+            float lifesteal = nbt.getFloat(LIFESTEAL);
+            player.heal(lifesteal * damage);
         }
         return damage;
     }

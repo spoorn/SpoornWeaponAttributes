@@ -26,6 +26,9 @@ public class ModConfig implements ConfigData {
     @Comment("Poison attribute config")
     public PoisonConfig poisonConfig = new PoisonConfig();
 
+    @Comment("Lifesteal attribute config")
+    public LifestealConfig lifestealConfig = new LifestealConfig();
+
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
     }

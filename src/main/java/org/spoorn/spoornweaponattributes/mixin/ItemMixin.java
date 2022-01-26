@@ -1,7 +1,6 @@
 package org.spoorn.spoornweaponattributes.mixin;
 
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.BONUS_DAMAGE;
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.CRIT_CHANCE;
+import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -55,6 +54,9 @@ public class ItemMixin {
                             case Attribute.POISON_NAME:
                                 handlePoison(newNbt);
                                 break;
+                            case Attribute.LIFESTEAL_NAME:
+                                handleLifesteal(newNbt);
+                                break;
                             default:
                                 // do nothing
                         }
@@ -102,5 +104,11 @@ public class ItemMixin {
         PoisonConfig config = ModConfig.get().poisonConfig;
         float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
         nbt.putFloat(BONUS_DAMAGE, bonusDamage);
+    }
+
+    private void handleLifesteal(NbtCompound nbt) {
+        LifestealConfig config = ModConfig.get().lifestealConfig;
+        float lifesteal = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config. maxLifesteal);
+        nbt.putFloat(LIFESTEAL, lifesteal);
     }
 }

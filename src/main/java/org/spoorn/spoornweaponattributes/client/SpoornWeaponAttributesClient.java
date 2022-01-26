@@ -1,7 +1,6 @@
 package org.spoorn.spoornweaponattributes.client;
 
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.BONUS_DAMAGE;
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.CRIT_CHANCE;
+import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.*;
 import lombok.extern.log4j.Log4j2;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -26,13 +25,18 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private static final Style CRIT_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(9851135));
     private static final Style LIGHTNING_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(15990666));
     private static final Style POISON_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(32537));
+    private static final Style LIFESTESAL_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(7864320));
     private static final MutableText FIRE_TOOLTIP = new TranslatableText("swa.tooltip.firedamage");
     private static final MutableText COLD_TOOLTIP = new TranslatableText("swa.tooltip.colddamage");
     private static final MutableText CRIT_TOOLTIP = new TranslatableText("swa.tooltip.critchance");
     private static final MutableText LIGHTNING_TOOLTIP = new TranslatableText("swa.tooltip.lightningdamage");
     private static final MutableText POISON_TOOLTIP = new TranslatableText("swa.tooltip.poisondamage");
+    private static final MutableText LIFESTEAL_TOOLTIP = new TranslatableText("swa.tooltip.lifesteal");
     private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#", SYMBOLS);
+    private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
+
+    private static final String LIFESTEAL_NO_TOOLTIP = "0";
 
     @Override
     public void onInitializeClient() {
@@ -69,6 +73,8 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                             case Attribute.POISON_NAME:
                                 handlePoison(adds, subNbt);
                                 break;
+                            case Attribute.LIFESTEAL_NAME:
+                                handleLifesteal(adds, subNbt);
                             default:
                                 // do nothing
                         }
@@ -120,6 +126,17 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
             float bonusDamage = nbt.getFloat(BONUS_DAMAGE);
             MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(bonusDamage)).append(POISON_TOOLTIP).setStyle(POISON_STYLE);
             tooltips.add(text);
+        }
+    }
+
+    private void handleLifesteal(List<Text> tooltips, NbtCompound nbt) {
+        if (nbt.contains(LIFESTEAL)) {
+            float lifesteal = nbt.getFloat(LIFESTEAL);
+            String lifestealStr = INTEGER_FORMAT.format(lifesteal);
+            if (!LIFESTEAL_NO_TOOLTIP.equals(lifestealStr)) {
+                MutableText text = new LiteralText(lifestealStr).append(LIFESTEAL_TOOLTIP).setStyle(LIFESTESAL_STYLE);
+                tooltips.add(text);
+            }
         }
     }
 }

@@ -15,6 +15,7 @@ public final class SpoornWeaponAttributesUtil {
     public static final String NBT_KEY = "spoornWeaponAttributes";
     public static final String BONUS_DAMAGE = "bonusDmg";
     public static final String CRIT_CHANCE = "critChance";
+    public static final String LIFESTEAL = "lifesteal";
     public static final Random RANDOM = new Random();
 
     public static boolean shouldTryGenAttr(ItemStack stack) {

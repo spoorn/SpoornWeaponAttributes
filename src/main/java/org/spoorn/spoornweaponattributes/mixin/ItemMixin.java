@@ -20,15 +20,16 @@ import java.util.Map.Entry;
 @Mixin(Item.class)
 public class ItemMixin {
 
+    private static final String SPOORN_LOOT_NBT_KEY = "spoornConfig";
+
     /**
      * Generates the NBT data for our mod on an item.
      */
     @Inject(method = "inventoryTick", at = @At(value = "HEAD"))
     public void addCustomNbt(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
-        // TODO: compat with Spoorn Loot
         if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack)) {
             NbtCompound root = stack.getOrCreateTag();
-            if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains("spoornConfig")) {
+            if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains(SPOORN_LOOT_NBT_KEY)) {
                 NbtCompound nbt = SpoornWeaponAttributesUtil.createAttributesSubNbt(root);
                 //System.out.println("Initial Nbt: " + nbt);
 

@@ -33,38 +33,41 @@ public class PlayerEntityMixin {
      */
     @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;getAttributeValue(Lnet/minecraft/entity/attribute/EntityAttribute;)D"))
     public double modifyBaseDamage(PlayerEntity instance, EntityAttribute entityAttribute, Entity target) {
-        float f = (float)instance.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        float f = (float) instance.getAttributeValue(EntityAttributes.GENERIC_ATTACK_DAMAGE);
+        try {
+            if ((instance instanceof ServerPlayerEntity) && (target instanceof LivingEntity)) {
+                ItemStack mainItemStack = instance.getMainHandStack();
+                Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(mainItemStack);
+                if (optNbt.isPresent()) {
+                    NbtCompound nbt = optNbt.get();
+                    for (Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
+                        String name = entry.getKey();
 
-        if ((instance instanceof ServerPlayerEntity) && (target instanceof LivingEntity)) {
-            ItemStack mainItemStack = instance.getMainHandStack();
-            Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(mainItemStack);
-            if (optNbt.isPresent()) {
-                NbtCompound nbt = optNbt.get();
-                for (Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
-                    String name = entry.getKey();
-
-                    if (nbt.contains(name)) {
-                        NbtCompound subNbt = nbt.getCompound(name);
-                        switch (name) {
-                            case Attribute.FIRE_NAME:
-                                f += handleFire(subNbt, instance, target);
-                                break;
-                            case Attribute.COLD_NAME:
-                                f += handleCold(subNbt, instance, target);
-                                break;
-                            case Attribute.LIGHTNING_NAME:
-                                f += handleLightning(subNbt, instance, target);
-                                break;
-                            case Attribute.POISON_NAME:
-                                f += handlePoison(subNbt, instance, target);
-                                break;
-                            default:
-                                // crit, lifesteal, and other attributes apply to final damage
-                                // do nothing
+                        if (nbt.contains(name)) {
+                            NbtCompound subNbt = nbt.getCompound(name);
+                            switch (name) {
+                                case Attribute.FIRE_NAME:
+                                    f += handleFire(subNbt, instance, target);
+                                    break;
+                                case Attribute.COLD_NAME:
+                                    f += handleCold(subNbt, instance, target);
+                                    break;
+                                case Attribute.LIGHTNING_NAME:
+                                    f += handleLightning(subNbt, instance, target);
+                                    break;
+                                case Attribute.POISON_NAME:
+                                    f += handlePoison(subNbt, instance, target);
+                                    break;
+                                default:
+                                    // crit, lifesteal, and other attributes apply to final damage
+                                    // do nothing
+                            }
                         }
                     }
                 }
             }
+        } catch (Exception e) {
+            System.err.println("[SpoornWeaponAttributes] Applying base attribute effects failed: " + e);
         }
 
         return f;
@@ -75,22 +78,26 @@ public class PlayerEntityMixin {
      */
     @Redirect(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/Entity;damage(Lnet/minecraft/entity/damage/DamageSource;F)Z"))
     public boolean modifyFinalDamage(Entity instance, DamageSource source, float amount) {
-        PlayerEntity player = (PlayerEntity) (Object) this;
-        if ((player instanceof ServerPlayerEntity) && (instance instanceof LivingEntity)) {
-            ItemStack mainItemStack = player.getMainHandStack();
-            Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(mainItemStack);
-            if (optNbt.isPresent()) {
-                NbtCompound nbt = optNbt.get();
-                if (nbt.contains(Attribute.CRIT_NAME)) {
-                    NbtCompound subNbt = nbt.getCompound(Attribute.CRIT_NAME);
-                    amount = handleCrit(amount, subNbt, player, instance);
-                }
+        try {
+            PlayerEntity player = (PlayerEntity) (Object) this;
+            if ((player instanceof ServerPlayerEntity) && (instance instanceof LivingEntity)) {
+                ItemStack mainItemStack = player.getMainHandStack();
+                Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(mainItemStack);
+                if (optNbt.isPresent()) {
+                    NbtCompound nbt = optNbt.get();
+                    if (nbt.contains(Attribute.CRIT_NAME)) {
+                        NbtCompound subNbt = nbt.getCompound(Attribute.CRIT_NAME);
+                        amount = handleCrit(amount, subNbt, player, instance);
+                    }
 
-                if (nbt.contains(Attribute.LIFESTEAL_NAME)) {
-                    NbtCompound subNbt = nbt.getCompound(Attribute.LIFESTEAL_NAME);
-                    amount = handleLifesteal(amount, subNbt, player, instance);
+                    if (nbt.contains(Attribute.LIFESTEAL_NAME)) {
+                        NbtCompound subNbt = nbt.getCompound(Attribute.LIFESTEAL_NAME);
+                        amount = handleLifesteal(amount, subNbt, player, instance);
+                    }
                 }
             }
+        } catch (Exception e) {
+            System.err.println("[SpoornWeaponAttributes] Applying final attribute effects failed: " + e);
         }
         return instance.damage(source, amount);
     }
@@ -114,7 +121,7 @@ public class PlayerEntityMixin {
         int slowDuration = ModConfig.get().coldConfig.slowDuration;
         if (slowDuration > 0) {
             LivingEntity livingEntity = (LivingEntity) target;
-            livingEntity.applyStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * slowDuration, 2));
+            livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * slowDuration, 2));
         }
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);
@@ -140,7 +147,7 @@ public class PlayerEntityMixin {
         int poisonDuration = ModConfig.get().poisonConfig.poisonDuration;
         if (poisonDuration > 0) {
             LivingEntity livingEntity = (LivingEntity) target;
-            livingEntity.applyStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonDuration, 2));
+            livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonDuration, 2));
         }
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);

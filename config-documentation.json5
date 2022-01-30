@@ -110,5 +110,18 @@
     "mean": 10,
     // Standard deviation for the distribution [default = 10]
     "standardDeviation": 10
+  },
+  // Explosive attribute config
+  "explosiveConfig": {
+    // Chance for a weapon to be Explosive [0 = never, 1 = always] [default = 0.02]
+    "attributeChance": 0.02,
+    // Chance for each attack to cause an explosion [0 = never, 1 = always] [default = 1.0]
+    "explosionChance": 1.0,
+    // Power of explosion, affects the radius of explosion [default = 2.0]
+    "explosionPower": 2.0,
+    // True if explosions should cause fires, else false [default = false]
+    "causeFires": false,
+    // True if explosions should break blocks [default = false]
+    "breakBlocks": false
   }
 }

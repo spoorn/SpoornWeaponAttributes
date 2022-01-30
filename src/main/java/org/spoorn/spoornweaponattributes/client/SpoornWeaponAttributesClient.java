@@ -8,6 +8,7 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.*;
+import net.minecraft.util.Formatting;
 import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
@@ -26,12 +27,15 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private static final Style LIGHTNING_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(15990666));
     private static final Style POISON_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(32537));
     private static final Style LIFESTESAL_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(7864320));
+    private static final Style EXPLOSIVE_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16711680));
     private static final MutableText FIRE_TOOLTIP = new TranslatableText("swa.tooltip.firedamage");
     private static final MutableText COLD_TOOLTIP = new TranslatableText("swa.tooltip.colddamage");
     private static final MutableText CRIT_TOOLTIP = new TranslatableText("swa.tooltip.critchance");
     private static final MutableText LIGHTNING_TOOLTIP = new TranslatableText("swa.tooltip.lightningdamage");
     private static final MutableText POISON_TOOLTIP = new TranslatableText("swa.tooltip.poisondamage");
     private static final MutableText LIFESTEAL_TOOLTIP = new TranslatableText("swa.tooltip.lifesteal");
+    private static final MutableText EXPLOSIVE_TOOLTIP = new TranslatableText("swa.tooltip.explosive");
+    private static final MutableText EXPLOSIVE_PREPEND_TOOLTIP = new TranslatableText("swa.tooltip.explosiveprepend").formatted(Formatting.ITALIC, Formatting.DARK_GRAY);
     private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#", SYMBOLS);
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
@@ -75,6 +79,10 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                                 break;
                             case Attribute.LIFESTEAL_NAME:
                                 handleLifesteal(adds, subNbt);
+                                break;
+                            case Attribute.EXPLOSIVE_NAME:
+                                handleExplosive(adds, subNbt);
+                                break;
                             default:
                                 // do nothing
                         }
@@ -138,5 +146,11 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                 tooltips.add(text);
             }
         }
+    }
+
+    private void handleExplosive(List<Text> tooltips, NbtCompound nbt) {
+        MutableText text = EXPLOSIVE_TOOLTIP.setStyle(EXPLOSIVE_STYLE);
+        tooltips.add(text);
+        tooltips.add(0, EXPLOSIVE_PREPEND_TOOLTIP);
     }
 }

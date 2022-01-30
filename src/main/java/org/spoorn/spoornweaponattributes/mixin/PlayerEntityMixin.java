@@ -15,11 +15,16 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
+import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
+import org.spoorn.spoornweaponattributes.config.attribute.ExplosiveConfig;
+import org.spoorn.spoornweaponattributes.entity.damage.SWAExplosionDamageSource;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.util.Map.Entry;
@@ -94,6 +99,11 @@ public class PlayerEntityMixin {
                         NbtCompound subNbt = nbt.getCompound(Attribute.LIFESTEAL_NAME);
                         amount = handleLifesteal(amount, subNbt, player, instance);
                     }
+
+                    if (nbt.contains(Attribute.EXPLOSIVE_NAME)) {
+                        NbtCompound subNbt = nbt.getCompound(Attribute.EXPLOSIVE_NAME);
+                        amount = handleExplosive(amount, subNbt, player, instance);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -101,6 +111,15 @@ public class PlayerEntityMixin {
         }
         return instance.damage(source, amount);
     }
+
+    @Inject(method = "isInvulnerableTo", at = @At(value = "HEAD"), cancellable = true)
+    public void checkSWADamage(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
+        // TODO: Configurate to damage other players or not
+        if (damageSource instanceof SWAExplosionDamageSource) {
+            cir.setReturnValue(true);
+        }
+    }
+
 
     /**
      * We manually list all the handles here for optimal latency
@@ -169,6 +188,18 @@ public class PlayerEntityMixin {
         if (nbt.contains(LIFESTEAL)) {
             float lifesteal = nbt.getFloat(LIFESTEAL);
             player.heal(lifesteal * damage);
+        }
+        return damage;
+    }
+
+    private float handleExplosive(float damage, NbtCompound nbt, PlayerEntity player, Entity target) {
+        if (nbt.contains(EXPLOSION_CHANCE)) {
+            float explosionChance = nbt.getFloat(EXPLOSION_CHANCE);
+            ExplosiveConfig config = ModConfig.get().explosiveConfig;
+            if (SpoornWeaponAttributesUtil.shouldEnable(explosionChance) && !target.world.isClient()) {
+                target.world.createExplosion(target, SWA_EXPLOSION_DAMAGE_SOURCE, null, target.getX(), target.getY(), target.getZ(),
+                        (float) config.explosionPower, config.causeFires, config.breakBlocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE);
+            }
         }
         return damage;
     }

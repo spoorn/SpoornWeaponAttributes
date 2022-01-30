@@ -27,7 +27,7 @@ public class ItemMixin {
      */
     @Inject(method = "inventoryTick", at = @At(value = "HEAD"))
     public void addCustomNbt(ItemStack stack, World world, Entity entity, int slot, boolean selected, CallbackInfo ci) {
-        if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack)) {
+        if (!world.isClient() && SpoornWeaponAttributesUtil.shouldTryGenAttr(stack)) {
             NbtCompound root = stack.getOrCreateTag();
             if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains(SPOORN_LOOT_NBT_KEY)) {
                 NbtCompound nbt = SpoornWeaponAttributesUtil.createAttributesSubNbt(root);
@@ -58,6 +58,8 @@ public class ItemMixin {
                             case Attribute.LIFESTEAL_NAME:
                                 handleLifesteal(newNbt);
                                 break;
+                            case Attribute.EXPLOSIVE_NAME:
+                                handleExplosive(newNbt);
                             default:
                                 // do nothing
                         }
@@ -111,5 +113,10 @@ public class ItemMixin {
         LifestealConfig config = ModConfig.get().lifestealConfig;
         float lifesteal = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config. maxLifesteal);
         nbt.putFloat(LIFESTEAL, lifesteal);
+    }
+
+    private void handleExplosive(NbtCompound nbt) {
+        ExplosiveConfig config = ModConfig.get().explosiveConfig;
+        nbt.putFloat(EXPLOSION_CHANCE, (float) config.explosionChance);
     }
 }

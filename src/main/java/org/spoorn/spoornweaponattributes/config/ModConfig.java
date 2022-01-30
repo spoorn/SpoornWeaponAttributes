@@ -29,6 +29,9 @@ public class ModConfig implements ConfigData {
     @Comment("Lifesteal attribute config")
     public LifestealConfig lifestealConfig = new LifestealConfig();
 
+    @Comment("Explosive attribute config")
+    public ExplosiveConfig explosiveConfig = new ExplosiveConfig();
+
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
     }

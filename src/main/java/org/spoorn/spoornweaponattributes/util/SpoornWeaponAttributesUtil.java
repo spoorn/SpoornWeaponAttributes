@@ -3,6 +3,7 @@ package org.spoorn.spoornweaponattributes.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
+import org.spoorn.spoornweaponattributes.entity.damage.SWAExplosionDamageSource;
 
 import java.util.Optional;
 import java.util.Random;
@@ -16,6 +17,9 @@ public final class SpoornWeaponAttributesUtil {
     public static final String BONUS_DAMAGE = "bonusDmg";
     public static final String CRIT_CHANCE = "critChance";
     public static final String LIFESTEAL = "lifesteal";
+    public static final String EXPLOSION_CHANCE = "explosionChance";
+    private static final String EXPLOSION_DAMAGE_SOURCE_ID = "swa.explosion";
+    public static final SWAExplosionDamageSource SWA_EXPLOSION_DAMAGE_SOURCE = new SWAExplosionDamageSource(EXPLOSION_DAMAGE_SOURCE_ID);
     public static final Random RANDOM = new Random();
 
     public static boolean shouldTryGenAttr(ItemStack stack) {
@@ -39,6 +43,9 @@ public final class SpoornWeaponAttributesUtil {
         return Optional.empty();
     }
 
+    /**
+     * Assumes chance is between 0.0 and 1.0.
+     */
     public static boolean shouldEnable(float chance) {
         return (chance > 0) && (RANDOM.nextFloat() < chance);
     }

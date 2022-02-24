@@ -7,8 +7,9 @@ public class FireConfig {
     @Comment("Chance for a weapon to have fire damage [0 = never, 1 = always] [default = 0.05]")
     public double attributeChance = 0.05;
 
-    @Comment("Duration in seconds to set target on fire for [0 = don't set on fire] [default = 5]")
-    public int fireDuration = 5;
+    @Comment("Expression for duration in seconds to set target on fire for based on damage\n" +
+            "(can just be a scalar value such as '5' for 5 seconds) [0 = don't set on fire] [default = (damage+7)/2]")
+    public String fireDuration = "(damage+7)/2";
 
     @Comment("Minimum bonus damage [default = 1.0]")
     public float minDamage = 1;

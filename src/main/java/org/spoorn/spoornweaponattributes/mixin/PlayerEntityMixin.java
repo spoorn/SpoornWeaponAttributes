@@ -187,7 +187,7 @@ public class PlayerEntityMixin {
     private float handleLifesteal(float damage, NbtCompound nbt, PlayerEntity player, Entity target) {
         if (nbt.contains(LIFESTEAL)) {
             float lifesteal = nbt.getFloat(LIFESTEAL);
-            player.heal(lifesteal * damage);
+            player.heal(lifesteal * damage / 100);
         }
         return damage;
     }

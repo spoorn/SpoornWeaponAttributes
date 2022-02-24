@@ -126,9 +126,12 @@ public class PlayerEntityMixin {
      */
 
     private float handleFire(NbtCompound nbt, PlayerEntity player, Entity target) {
-        int fireDuration = ModConfig.get().fireConfig.fireDuration;
-        if (fireDuration > 0) {
-            target.setOnFireFor(fireDuration);
+        int fireDurationTicks = 0;
+        if (nbt.contains(DURATION)) {
+            fireDurationTicks = (int) (nbt.getFloat(DURATION) * 20);
+        }
+        if (fireDurationTicks > 0 && target.getFireTicks() < fireDurationTicks) {
+            target.setFireTicks(fireDurationTicks);
         }
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);
@@ -137,10 +140,26 @@ public class PlayerEntityMixin {
     }
 
     private float handleCold(NbtCompound nbt, PlayerEntity player, Entity target) {
-        int slowDuration = ModConfig.get().coldConfig.slowDuration;
-        if (slowDuration > 0) {
-            LivingEntity livingEntity = (LivingEntity) target;
-            livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, 20 * slowDuration, 2));
+        LivingEntity livingEntity = (LivingEntity) target;
+
+        int freezeDurationTicks = 0;
+        if (nbt.contains(FREEZE_DURATION)) {
+            // *40 because freeze duration decreases by 2 per tick
+            freezeDurationTicks = (int) (nbt.getFloat(FREEZE_DURATION) * 40);
+        }
+        if (freezeDurationTicks > 0 && livingEntity.getFrozenTicks() < freezeDurationTicks) {
+            livingEntity.setFrozenTicks(freezeDurationTicks);
+        }
+        
+        int slowDurationTicks = 0;
+        if (nbt.contains(SLOW_DURATION)) {
+            slowDurationTicks = (int) (nbt.getFloat(SLOW_DURATION)) * 20;
+        }
+        if (slowDurationTicks > 0) {
+            StatusEffectInstance existingSlowEffect = livingEntity.getStatusEffect(StatusEffects.SLOWNESS);
+            if (existingSlowEffect == null || existingSlowEffect.getDuration() < slowDurationTicks) {
+                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, slowDurationTicks, 2));
+            }
         }
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);
@@ -163,11 +182,19 @@ public class PlayerEntityMixin {
     }
 
     private float handlePoison(NbtCompound nbt, PlayerEntity player, Entity target) {
-        int poisonDuration = ModConfig.get().poisonConfig.poisonDuration;
-        if (poisonDuration > 0) {
-            LivingEntity livingEntity = (LivingEntity) target;
-            livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 20 * poisonDuration, 2));
+        int poisonDurationTicks = 0;
+        if (nbt.contains(DURATION)) {
+            poisonDurationTicks = (int) (nbt.getFloat(DURATION) * 20);
         }
+        
+        if (poisonDurationTicks > 0) {
+            LivingEntity livingEntity = (LivingEntity) target;
+            StatusEffectInstance existingEffect = livingEntity.getStatusEffect(StatusEffects.POISON);
+            if (existingEffect == null || existingEffect.getDuration() < poisonDurationTicks) {
+                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, poisonDurationTicks, 2));
+            }
+        }
+            
         if (nbt.contains(BONUS_DAMAGE)) {
             return nbt.getFloat(BONUS_DAMAGE);
         }

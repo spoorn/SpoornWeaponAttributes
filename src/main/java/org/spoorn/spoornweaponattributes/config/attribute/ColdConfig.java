@@ -7,9 +7,12 @@ public class ColdConfig {
     @Comment("Chance for a weapon to have cold damage [0 = never, 1 = always] [default = 0.05]")
     public double attributeChance = 0.05;
 
-    @Comment("Duration in seconds to slow target [0 = don't slow] [default = 5]")
-    public int slowDuration = 5;
-
+    @Comment("Expression for duration in seconds to slow target [0 = don't slow] [default = (damage+7)/2]")
+    public String slowDuration = "(damage+7)/2";
+    
+    @Comment("Expression for duration in seconds to add frozen effect to target (deals damage over time) [0 = don't freeze] [default = (damage+7)/2]")
+    public String freezeDuration = "(damage+7)/2";
+    
     @Comment("Minimum bonus damage [default = 1.0]")
     public float minDamage = 1;
 

@@ -34,6 +34,7 @@ public class ModConfig implements ConfigData {
 
     public static void init() {
         AutoConfig.register(ModConfig.class, JanksonConfigSerializer::new);
+        Expressions.init();
     }
 
     public static ModConfig get() {

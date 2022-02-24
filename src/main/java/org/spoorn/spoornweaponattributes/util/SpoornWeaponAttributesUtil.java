@@ -13,8 +13,11 @@ import java.util.Random;
  */
 public final class SpoornWeaponAttributesUtil {
 
-    public static final String NBT_KEY = "spoornWeaponAttributes";
+    public static final String NBT_KEY = "swa3";
     public static final String BONUS_DAMAGE = "bonusDmg";
+    public static final String DURATION = "dur";
+    public static final String SLOW_DURATION = "slowDur";
+    public static final String FREEZE_DURATION = "freezeDur";
     public static final String CRIT_CHANCE = "critChance";
     public static final String LIFESTEAL = "lifesteal";
     public static final String EXPLOSION_CHANCE = "explosionChance";

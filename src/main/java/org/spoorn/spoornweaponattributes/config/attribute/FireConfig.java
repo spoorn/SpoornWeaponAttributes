@@ -21,7 +21,7 @@ public class FireConfig {
             "value between the minDamage and maxDamage [default = true]")
     public boolean useGaussian = true;
 
-    // The default mean and sd makes it so  there's a ~15% chance of getting above 5 damage
+    // The default mean and sd makes it so  there's a ~23% chance of getting above 5 damage
     @Comment("Average damage [default = 1]")
     public int mean = 1;
 

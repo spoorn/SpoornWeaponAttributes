@@ -55,9 +55,20 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void registerTooltipCallback() {
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
             Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(stack);
-            if (optNbt.isPresent()) {
+
+            List<Text> adds = null;
+            
+            // Rerolling
+            if (stack.hasNbt() && optNbt.isEmpty()) {
+                NbtCompound root = stack.getNbt();
+                if (root.getBoolean(REROLL_NBT_KEY)) {
+                    adds = new ArrayList<>();
+                    adds.add(new LiteralText(""));
+                    adds.add(new LiteralText("???").formatted(Formatting.AQUA));
+                }
+            } else if (optNbt.isPresent()) {
                 NbtCompound nbt = optNbt.get();
-                List<Text> adds = new ArrayList<>();
+                adds = new ArrayList<>();
                 adds.add(new LiteralText(""));
 
                 for (String name : Attribute.TOOLTIPS) {
@@ -90,11 +101,11 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                         }
                     }
                 }
+            }
 
-                if (adds.size() > 1) {
-                    // Add after the item name
-                    lines.addAll(1, adds);
-                }
+            if (adds != null && adds.size() > 1) {
+                // Add after the item name
+                lines.addAll(1, adds);
             }
         });
     }

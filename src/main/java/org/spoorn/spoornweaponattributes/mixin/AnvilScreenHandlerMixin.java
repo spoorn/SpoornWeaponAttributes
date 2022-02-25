@@ -43,7 +43,6 @@ public class AnvilScreenHandlerMixin {
 
         ItemStack swaStack = canReroll(input1, input2);
         if (swaStack != null) {
-            System.out.println("### HAS");
             ItemStack output = swaStack.copy();
             NbtCompound root = output.getNbt();
             root.remove(NBT_KEY);

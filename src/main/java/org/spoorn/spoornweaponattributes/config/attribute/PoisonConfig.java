@@ -8,7 +8,7 @@ public class PoisonConfig {
     public double attributeChance = 0.05;
 
     @Comment("Expression for duration in seconds to poison target [0 = don't poison] [default = (damage+17)/2]")
-    public String poisonDuration = "(damage+17)/2";
+    public String poisonDuration = "(damage+7)/2";
 
     @Comment("Minimum bonus damage [default = 1.0]")
     public float minDamage = 1;

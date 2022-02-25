@@ -5,7 +5,10 @@
   "compatibilityLevel": "JAVA_8",
   "mixins": [
     "ItemMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "ForgingScreenHandlerAccessor",
+    "ScreenHandlerAccessor",
+    "AnvilScreenHandlerMixin"
   ],
   "client": [
   ],

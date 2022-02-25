@@ -1,10 +1,16 @@
 package org.spoorn.spoornweaponattributes.util;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
+import org.spoorn.spoornweaponattributes.att.Attribute;
+import org.spoorn.spoornweaponattributes.config.Expressions;
+import org.spoorn.spoornweaponattributes.config.ModConfig;
+import org.spoorn.spoornweaponattributes.config.attribute.*;
 import org.spoorn.spoornweaponattributes.entity.damage.SWAExplosionDamageSource;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
 
@@ -14,6 +20,7 @@ import java.util.Random;
 public final class SpoornWeaponAttributesUtil {
 
     public static final String NBT_KEY = "swa3";
+    public static final String REROLL_NBT_KEY = "swa3_reroll";
     public static final String BONUS_DAMAGE = "bonusDmg";
     public static final String DURATION = "dur";
     public static final String SLOW_DURATION = "slowDur";
@@ -23,6 +30,8 @@ public final class SpoornWeaponAttributesUtil {
     private static final String EXPLOSION_DAMAGE_SOURCE_ID = "swa.explosion";
     public static final SWAExplosionDamageSource SWA_EXPLOSION_DAMAGE_SOURCE = new SWAExplosionDamageSource(EXPLOSION_DAMAGE_SOURCE_ID);
     public static final Random RANDOM = new Random();
+    
+    public static final String SPOORN_LOOT_NBT_KEY = "spoornConfig";
 
     public static boolean shouldTryGenAttr(ItemStack stack) {
         return stack.getItem() instanceof ToolItem;
@@ -43,6 +52,14 @@ public final class SpoornWeaponAttributesUtil {
             }
         }
         return Optional.empty();
+    }
+    
+    public static boolean hasSWANbt(ItemStack stack) {
+        return stack.hasTag() && stack.getTag().contains(NBT_KEY);
+    }
+    
+    public static boolean isLapisLazuli(ItemStack stack) {
+        return stack.getItem().equals(Items.LAPIS_LAZULI);
     }
 
     /**
@@ -81,5 +98,105 @@ public final class SpoornWeaponAttributesUtil {
             nextGaussian = max;
         }
         return nextGaussian;
+    }
+    
+    
+    // Apply attributes
+    public static void rollAttributes(NbtCompound root) {
+        if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains(SPOORN_LOOT_NBT_KEY)) {
+            NbtCompound nbt = SpoornWeaponAttributesUtil.createAttributesSubNbt(root);
+            //System.out.println("Initial Nbt: " + nbt);
+
+            for (Map.Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
+                String name = entry.getKey();
+                Attribute att = entry.getValue();
+
+                if (SpoornWeaponAttributesUtil.shouldEnable(att.chance)) {
+                    NbtCompound newNbt = new NbtCompound();
+                    switch (name) {
+                        case Attribute.CRIT_NAME:
+                            handleCrit(newNbt);
+                            break;
+                        case Attribute.FIRE_NAME:
+                            handleFire(newNbt);
+                            break;
+                        case Attribute.COLD_NAME:
+                            handleCold(newNbt);
+                            break;
+                        case Attribute.LIGHTNING_NAME:
+                            handleLightning(newNbt);
+                            break;
+                        case Attribute.POISON_NAME:
+                            handlePoison(newNbt);
+                            break;
+                        case Attribute.LIFESTEAL_NAME:
+                            handleLifesteal(newNbt);
+                            break;
+                        case Attribute.EXPLOSIVE_NAME:
+                            handleExplosive(newNbt);
+                            break;
+                        default:
+                            // do nothing
+                    }
+                    nbt.put(name, newNbt);
+                }
+            }
+
+            //System.out.println("Updated Nbt: " + nbt);
+        }
+    }
+
+    /**
+     * We manually list all the handles here for optimal latency
+     */
+
+    private static void handleCrit(NbtCompound nbt) {
+        CritConfig config = ModConfig.get().critConfig;
+        float critChance = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minCritChance, config.maxCritChance);
+        if (config.useGaussian) {
+            critChance /= 100;
+        }
+        nbt.putFloat(CRIT_CHANCE, critChance);
+    }
+
+    private static void handleFire(NbtCompound nbt) {
+        FireConfig config = ModConfig.get().fireConfig;
+        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
+        float duration = (float) Expressions.fireDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
+        nbt.putFloat(DURATION, duration);
+    }
+
+    private static void handleCold(NbtCompound nbt) {
+        ColdConfig config = ModConfig.get().coldConfig;
+        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
+        float slowDuration = (float) Expressions.slowDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
+        nbt.putFloat(SLOW_DURATION, slowDuration);
+    }
+
+    private static void handleLightning(NbtCompound nbt) {
+        LightningConfig config = ModConfig.get().lightningConfig;
+        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
+    }
+
+    private static void handlePoison(NbtCompound nbt) {
+        PoisonConfig config = ModConfig.get().poisonConfig;
+        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
+        float duration = (float) Expressions.poisonDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
+        nbt.putFloat(DURATION, duration);
+    }
+
+    private static void handleLifesteal(NbtCompound nbt) {
+        LifestealConfig config = ModConfig.get().lifestealConfig;
+        float lifesteal = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config. maxLifesteal);
+        nbt.putFloat(LIFESTEAL, lifesteal);
+    }
+
+    private static void handleExplosive(NbtCompound nbt) {
+        ExplosiveConfig config = ModConfig.get().explosiveConfig;
+        nbt.putFloat(EXPLOSION_CHANCE, (float) config.explosionChance);
     }
 }

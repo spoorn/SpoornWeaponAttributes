@@ -12,8 +12,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.Expressions;
-import org.spoorn.spoornweaponattributes.config.ModConfig;
-import org.spoorn.spoornweaponattributes.config.attribute.*;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.util.Map.Entry;
@@ -22,7 +20,6 @@ import java.util.Map.Entry;
 public class ItemMixin {
 
     // For compatibility
-    private static final String SPOORN_LOOT_NBT_KEY = "spoornConfig";
     private static final String OLD_NBT_KEY = "spoornWeaponAttributes";
 
     /**
@@ -37,47 +34,7 @@ public class ItemMixin {
                 handleMigration(root);
             }
             
-            if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY) && !root.contains(SPOORN_LOOT_NBT_KEY)) {
-                NbtCompound nbt = SpoornWeaponAttributesUtil.createAttributesSubNbt(root);
-                //System.out.println("Initial Nbt: " + nbt);
-
-                for (Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
-                    String name = entry.getKey();
-                    Attribute att = entry.getValue();
-
-                    if (SpoornWeaponAttributesUtil.shouldEnable(att.chance)) {
-                        NbtCompound newNbt = new NbtCompound();
-                        switch (name) {
-                            case Attribute.CRIT_NAME:
-                                handleCrit(newNbt);
-                                break;
-                            case Attribute.FIRE_NAME:
-                                handleFire(newNbt);
-                                break;
-                            case Attribute.COLD_NAME:
-                                handleCold(newNbt);
-                                break;
-                            case Attribute.LIGHTNING_NAME:
-                                handleLightning(newNbt);
-                                break;
-                            case Attribute.POISON_NAME:
-                                handlePoison(newNbt);
-                                break;
-                            case Attribute.LIFESTEAL_NAME:
-                                handleLifesteal(newNbt);
-                                break;
-                            case Attribute.EXPLOSIVE_NAME:
-                                handleExplosive(newNbt);
-                                break;
-                            default:
-                                // do nothing
-                        }
-                        nbt.put(name, newNbt);
-                    }
-                }
-
-                //System.out.println("Updated Nbt: " + nbt);
-            }
+            SpoornWeaponAttributesUtil.rollAttributes(root);
         }
     }
     
@@ -117,59 +74,5 @@ public class ItemMixin {
                 newNbt.put(name, oldInner);
             }
         }
-    }
-
-    /**
-     * We manually list all the handles here for optimal latency
-     */
-
-    private void handleCrit(NbtCompound nbt) {
-        CritConfig config = ModConfig.get().critConfig;
-        float critChance = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minCritChance, config.maxCritChance);
-        if (config.useGaussian) {
-            critChance /= 100;
-        }
-        nbt.putFloat(CRIT_CHANCE, critChance);
-    }
-
-    private void handleFire(NbtCompound nbt) {
-        FireConfig config = ModConfig.get().fireConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-        float duration = (float) Expressions.fireDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(DURATION, duration);
-    }
-
-    private void handleCold(NbtCompound nbt) {
-        ColdConfig config = ModConfig.get().coldConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-        float slowDuration = (float) Expressions.slowDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(SLOW_DURATION, slowDuration);
-    }
-
-    private void handleLightning(NbtCompound nbt) {
-        LightningConfig config = ModConfig.get().lightningConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-    }
-
-    private void handlePoison(NbtCompound nbt) {
-        PoisonConfig config = ModConfig.get().poisonConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-        float duration = (float) Expressions.poisonDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(DURATION, duration);
-    }
-
-    private void handleLifesteal(NbtCompound nbt) {
-        LifestealConfig config = ModConfig.get().lifestealConfig;
-        float lifesteal = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config. maxLifesteal);
-        nbt.putFloat(LIFESTEAL, lifesteal);
-    }
-
-    private void handleExplosive(NbtCompound nbt) {
-        ExplosiveConfig config = ModConfig.get().explosiveConfig;
-        nbt.putFloat(EXPLOSION_CHANCE, (float) config.explosionChance);
     }
 }

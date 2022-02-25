@@ -10,12 +10,14 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 import org.spoorn.spoornweaponattributes.att.Attribute;
-import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Optional;
 
 @Log4j2
 @Environment(EnvType.CLIENT)
@@ -53,9 +55,20 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void registerTooltipCallback() {
         ItemTooltipCallback.EVENT.register((stack, context, lines) -> {
             Optional<NbtCompound> optNbt = SpoornWeaponAttributesUtil.getSWANbtIfPresent(stack);
-            if (optNbt.isPresent()) {
+
+            List<Text> adds = null;
+            
+            // Rerolling
+            if (stack.hasTag() && !optNbt.isPresent()) {
+                NbtCompound root = stack.getTag();
+                if (root.getBoolean(REROLL_NBT_KEY)) {
+                    adds = new ArrayList<>();
+                    adds.add(new LiteralText(""));
+                    adds.add(new LiteralText("???").formatted(Formatting.AQUA));
+                }
+            } else if (optNbt.isPresent()) {
                 NbtCompound nbt = optNbt.get();
-                List<Text> adds = new ArrayList<>();
+                adds = new ArrayList<>();
                 adds.add(new LiteralText(""));
 
                 for (String name : Attribute.TOOLTIPS) {
@@ -88,11 +101,11 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                         }
                     }
                 }
+            }
 
-                if (adds.size() > 1) {
-                    // Add after the item name
-                    lines.addAll(1, adds);
-                }
+            if (adds != null && adds.size() > 1) {
+                // Add after the item name
+                lines.addAll(1, adds);
             }
         });
     }

@@ -141,15 +141,14 @@ public class PlayerEntityMixin {
 
     private float handleCold(NbtCompound nbt, PlayerEntity player, Entity target) {
         LivingEntity livingEntity = (LivingEntity) target;
-        int frozenTicks = livingEntity.getFrozenTicks()
 
-        int freezeAdditionTicks = 0;
+        int freezeDurationTicks = 0;
         if (nbt.contains(FREEZE_DURATION)) {
             // *40 because freeze duration decreases by 2 per tick
-            freezeAdditionTicks = (int) (nbt.getFloat(FREEZE_DURATION) * 40);
+            freezeDurationTicks = (int) (nbt.getFloat(FREEZE_DURATION) * 40);
         }
-        if (freezeAdditionTicks > 0) {
-            livingEntity.setFrozenTicks(frozenTicks + freezeAdditionTicks);
+        if (freezeDurationTicks > 0 && livingEntity.getFrozenTicks() < freezeDurationTicks) {
+            livingEntity.setFrozenTicks(freezeDurationTicks);
         }
         
         int slowDurationTicks = 0;

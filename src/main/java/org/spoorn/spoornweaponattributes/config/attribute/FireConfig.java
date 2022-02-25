@@ -22,8 +22,8 @@ public class FireConfig {
     public boolean useGaussian = true;
 
     // The default mean and sd makes it so  there's a ~15% chance of getting above 5 damage
-    @Comment("Average damage [default = 1]")
-    public int mean = 1;
+    @Comment("Average damage [default = 2]")
+    public int mean = 2;
 
     @Comment("Standard deviation for the distribution [default = 4]")
     public int standardDeviation = 4;

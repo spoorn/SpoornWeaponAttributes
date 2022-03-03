@@ -10,6 +10,10 @@ import org.spoorn.spoornweaponattributes.config.attribute.*;
 
 @Config(name = SpoornWeaponAttributes.MODID)
 public class ModConfig implements ConfigData {
+    
+    @Comment("Reroll item.  Pair a weapon with Spoorn Weapon Attributes on it with this item (vanilla or modded)\n" +
+            "in an Anvil to reroll attributes [default = minecraft:lapis_lazuli]")
+    public String rerollItem = "minecraft:lapis_lazuli";
 
     @Comment("Critical Hit attribute config")
     public CritConfig critConfig = new CritConfig();

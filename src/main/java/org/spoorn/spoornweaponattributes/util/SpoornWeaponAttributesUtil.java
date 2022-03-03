@@ -1,9 +1,12 @@
 package org.spoorn.spoornweaponattributes.util;
 
+import lombok.extern.log4j.Log4j2;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.Expressions;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
@@ -17,6 +20,7 @@ import java.util.Random;
 /**
  * All generic utilities.
  */
+@Log4j2
 public final class SpoornWeaponAttributesUtil {
 
     public static final String NBT_KEY = "swa3";
@@ -58,9 +62,14 @@ public final class SpoornWeaponAttributesUtil {
     public static boolean hasSWANbt(ItemStack stack) {
         return stack.hasNbt() && stack.getNbt().contains(NBT_KEY);
     }
-    
-    public static boolean isLapisLazuli(ItemStack stack) {
-        return stack.getItem().equals(Items.LAPIS_LAZULI);
+
+    public static boolean isRerollItem(ItemStack stack) {
+        String rerollItem = ModConfig.get().rerollItem;
+        Optional<Item> item = Registry.ITEM.getOrEmpty(new Identifier(rerollItem));
+        if (item.isEmpty()) {
+            throw new RuntimeException("Reroll item " + rerollItem + " was not found in the registry!");
+        }
+        return stack.getItem().equals(item.get());
     }
 
     /**

@@ -56,9 +56,9 @@ public class AnvilScreenHandlerMixin {
     }
     
     private ItemStack canReroll(ItemStack stack1, ItemStack stack2) {
-        if (SpoornWeaponAttributesUtil.hasSWANbt(stack1) && SpoornWeaponAttributesUtil.isLapisLazuli(stack2)) {
+        if (SpoornWeaponAttributesUtil.hasSWANbt(stack1) && SpoornWeaponAttributesUtil.isRerollItem(stack2)) {
             return stack1;
-        } else if (SpoornWeaponAttributesUtil.hasSWANbt(stack2) && SpoornWeaponAttributesUtil.isLapisLazuli(stack1)) {
+        } else if (SpoornWeaponAttributesUtil.hasSWANbt(stack2) && SpoornWeaponAttributesUtil.isRerollItem(stack1)) {
             return stack2;
         }
         return null;

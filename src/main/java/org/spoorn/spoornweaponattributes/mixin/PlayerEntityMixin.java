@@ -158,7 +158,7 @@ public class PlayerEntityMixin {
         if (slowDurationTicks > 0) {
             StatusEffectInstance existingSlowEffect = livingEntity.getStatusEffect(StatusEffects.SLOWNESS);
             if (existingSlowEffect == null || existingSlowEffect.getDuration() < slowDurationTicks) {
-                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, slowDurationTicks, 2));
+                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, slowDurationTicks, 0));
             }
         }
         if (nbt.contains(BONUS_DAMAGE)) {
@@ -191,7 +191,7 @@ public class PlayerEntityMixin {
             LivingEntity livingEntity = (LivingEntity) target;
             StatusEffectInstance existingEffect = livingEntity.getStatusEffect(StatusEffects.POISON);
             if (existingEffect == null || existingEffect.getDuration() < poisonDurationTicks) {
-                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, poisonDurationTicks, 2));
+                livingEntity.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, poisonDurationTicks, 1));
             }
         }
             

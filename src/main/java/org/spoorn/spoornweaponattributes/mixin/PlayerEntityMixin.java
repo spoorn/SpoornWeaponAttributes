@@ -112,14 +112,6 @@ public class PlayerEntityMixin {
         return instance.damage(source, amount);
     }
 
-    @Inject(method = "isInvulnerableTo", at = @At(value = "HEAD"), cancellable = true)
-    public void checkSWADamage(DamageSource damageSource, CallbackInfoReturnable<Boolean> cir) {
-        // TODO: Configurate to damage other players or not
-        if (damageSource instanceof SWAExplosionDamageSource) {
-            cir.setReturnValue(true);
-        }
-    }
-
 
     /**
      * We manually list all the handles here for optimal latency

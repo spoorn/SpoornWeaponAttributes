@@ -18,13 +18,10 @@ import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.config.attribute.ExplosiveConfig;
-import org.spoorn.spoornweaponattributes.entity.damage.SWAExplosionDamageSource;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.util.Map.Entry;

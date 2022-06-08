@@ -30,14 +30,14 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private static final Style POISON_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(32537));
     private static final Style LIFESTESAL_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(7864320));
     private static final Style EXPLOSIVE_STYLE = Style.EMPTY.withColor(TextColor.fromRgb(16711680));
-    private static final MutableText FIRE_TOOLTIP = new TranslatableText("swa.tooltip.firedamage");
-    private static final MutableText COLD_TOOLTIP = new TranslatableText("swa.tooltip.colddamage");
-    private static final MutableText CRIT_TOOLTIP = new TranslatableText("swa.tooltip.critchance");
-    private static final MutableText LIGHTNING_TOOLTIP = new TranslatableText("swa.tooltip.lightningdamage");
-    private static final MutableText POISON_TOOLTIP = new TranslatableText("swa.tooltip.poisondamage");
-    private static final MutableText LIFESTEAL_TOOLTIP = new TranslatableText("swa.tooltip.lifesteal");
-    private static final MutableText EXPLOSIVE_TOOLTIP = new TranslatableText("swa.tooltip.explosive");
-    private static final MutableText EXPLOSIVE_PREPEND_TOOLTIP = new TranslatableText("swa.tooltip.explosiveprepend").formatted(Formatting.ITALIC, Formatting.DARK_GRAY);
+    private static final MutableText FIRE_TOOLTIP = Text.translatable("swa.tooltip.firedamage");
+    private static final MutableText COLD_TOOLTIP = Text.translatable("swa.tooltip.colddamage");
+    private static final MutableText CRIT_TOOLTIP = Text.translatable("swa.tooltip.critchance");
+    private static final MutableText LIGHTNING_TOOLTIP = Text.translatable("swa.tooltip.lightningdamage");
+    private static final MutableText POISON_TOOLTIP = Text.translatable("swa.tooltip.poisondamage");
+    private static final MutableText LIFESTEAL_TOOLTIP = Text.translatable("swa.tooltip.lifesteal");
+    private static final MutableText EXPLOSIVE_TOOLTIP = Text.translatable("swa.tooltip.explosive");
+    private static final MutableText EXPLOSIVE_PREPEND_TOOLTIP = Text.translatable("swa.tooltip.explosiveprepend").formatted(Formatting.ITALIC, Formatting.DARK_GRAY);
     private static final DecimalFormatSymbols SYMBOLS = new DecimalFormatSymbols(Locale.US);
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.#", SYMBOLS);
     private static final DecimalFormat INTEGER_FORMAT = new DecimalFormat("#", SYMBOLS);
@@ -63,13 +63,13 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                 NbtCompound root = stack.getNbt();
                 if (root.getBoolean(REROLL_NBT_KEY)) {
                     adds = new ArrayList<>();
-                    adds.add(new LiteralText(""));
-                    adds.add(new LiteralText("???").formatted(Formatting.AQUA));
+                    adds.add(Text.literal(""));
+                    adds.add(Text.literal("???").formatted(Formatting.AQUA));
                 }
             } else if (optNbt.isPresent()) {
                 NbtCompound nbt = optNbt.get();
                 adds = new ArrayList<>();
-                adds.add(new LiteralText(""));
+                adds.add(Text.literal(""));
 
                 for (String name : Attribute.TOOLTIPS) {
                     if (nbt.contains(name)) {
@@ -113,7 +113,7 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void handleCrit(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(CRIT_CHANCE)) {
             float critChance = nbt.getFloat(CRIT_CHANCE);
-            MutableText text = new LiteralText(Integer.toString(Math.round(critChance * 100))).append(CRIT_TOOLTIP).setStyle(CRIT_STYLE);
+            MutableText text = Text.literal(Integer.toString(Math.round(critChance * 100))).append(CRIT_TOOLTIP).setStyle(CRIT_STYLE);
             tooltips.add(text);
         }
     }
@@ -121,7 +121,7 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void handleFire(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(BONUS_DAMAGE)) {
             float bonusDamage = nbt.getFloat(BONUS_DAMAGE);
-            MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(bonusDamage)).append(FIRE_TOOLTIP).setStyle(FIRE_STYLE);
+            MutableText text = Text.literal("+" + DECIMAL_FORMAT.format(bonusDamage)).append(FIRE_TOOLTIP).setStyle(FIRE_STYLE);
             tooltips.add(text);
         }
     }
@@ -129,7 +129,7 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void handleCold(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(BONUS_DAMAGE)) {
             float bonusDamage = nbt.getFloat(BONUS_DAMAGE);
-            MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(bonusDamage)).append(COLD_TOOLTIP).setStyle(COLD_STYLE);
+            MutableText text = Text.literal("+" + DECIMAL_FORMAT.format(bonusDamage)).append(COLD_TOOLTIP).setStyle(COLD_STYLE);
             tooltips.add(text);
         }
     }
@@ -137,7 +137,7 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void handleLightning(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(BONUS_DAMAGE)) {
             float bonusDamage = nbt.getFloat(BONUS_DAMAGE);
-            MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(bonusDamage)).append(LIGHTNING_TOOLTIP).setStyle(LIGHTNING_STYLE);
+            MutableText text = Text.literal("+" + DECIMAL_FORMAT.format(bonusDamage)).append(LIGHTNING_TOOLTIP).setStyle(LIGHTNING_STYLE);
             tooltips.add(text);
         }
     }
@@ -145,7 +145,7 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
     private void handlePoison(List<Text> tooltips, NbtCompound nbt) {
         if (nbt.contains(BONUS_DAMAGE)) {
             float bonusDamage = nbt.getFloat(BONUS_DAMAGE);
-            MutableText text = new LiteralText("+" + DECIMAL_FORMAT.format(bonusDamage)).append(POISON_TOOLTIP).setStyle(POISON_STYLE);
+            MutableText text = Text.literal("+" + DECIMAL_FORMAT.format(bonusDamage)).append(POISON_TOOLTIP).setStyle(POISON_STYLE);
             tooltips.add(text);
         }
     }
@@ -155,7 +155,7 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
             float lifesteal = nbt.getFloat(LIFESTEAL);
             String lifestealStr = INTEGER_FORMAT.format(lifesteal);
             if (!LIFESTEAL_NO_TOOLTIP.equals(lifestealStr)) {
-                MutableText text = new LiteralText(lifestealStr).append(LIFESTEAL_TOOLTIP).setStyle(LIFESTESAL_STYLE);
+                MutableText text = Text.literal(lifestealStr).append(LIFESTEAL_TOOLTIP).setStyle(LIFESTESAL_STYLE);
                 tooltips.add(text);
             }
         }

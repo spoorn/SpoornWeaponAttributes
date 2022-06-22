@@ -23,11 +23,11 @@ public class CritConfig {
             "value between the minCritChance and maxCritChance [default = true]")
     public boolean useGaussian = true;
 
-    // The default mean and sd makes it so  there's a ~31% chance of getting above 50% crit chance
+    // The default mean and sd makes it so  there's a ~10.56% chance of getting above 50% crit chance and 0.01% of 100% chance
     @Comment("Average crit chance [min = 0, max = 100] [default = 25]")
     @ConfigEntry.BoundedDiscrete(min = 0L, max = 100L)
     public int mean = 25;
 
-    @Comment("Standard deviation for the distribution [default = 50]")
-    public int standardDeviation = 50;
+    @Comment("Standard deviation for the distribution [default = 20]")
+    public int standardDeviation = 20;
 }

@@ -23,8 +23,8 @@
     "useGaussian": true,
     // Average crit chance [min = 0, max = 100] [default = 25]
     "mean": 25,
-    // Standard deviation for the distribution [default = 50]
-    "standardDeviation": 50
+    // Standard deviation for the distribution [default = 20]
+    "standardDeviation": 20
   },
   // Fire attribute config
   "fireConfig": {
@@ -44,8 +44,8 @@
     "useGaussian": true,
     // Average damage [default = 1]
     "mean": 1,
-    // Standard deviation for the distribution [default = 4]
-    "standardDeviation": 4
+    // Standard deviation for the distribution [default = 2.5]
+    "standardDeviation": 2.5
   },
   // Cold attribute config
   "coldConfig": {
@@ -65,8 +65,8 @@
     "useGaussian": true,
     // Average damage [default = 1]
     "mean": 1,
-    // Standard deviation for the distribution [default = 4]
-    "standardDeviation": 4
+    // Standard deviation for the distribution [default = 2.5]
+    "standardDeviation": 2.5
   },
   // Lightning attribute config
   "lightningConfig": {
@@ -84,8 +84,8 @@
     "useGaussian": true,
     // Average damage [default = 1]
     "mean": 1,
-    // Standard deviation for the distribution [default = 4]
-    "standardDeviation": 4
+    // Standard deviation for the distribution [default = 2.5]
+    "standardDeviation": 2.5
   },
   // Poison attribute config
   "poisonConfig": {
@@ -103,8 +103,8 @@
     "useGaussian": true,
     // Average damage [default = 1]
     "mean": 1,
-    // Standard deviation for the distribution [default = 4]
-    "standardDeviation": 4
+    // Standard deviation for the distribution [default = 2.5]
+    "standardDeviation": 2.5
   },
   // Lifesteal attribute config
   "lifestealConfig": {
@@ -118,8 +118,8 @@
        value between the minDamage and maxDamage [default = true]
     */
     "useGaussian": true,
-    // Average lifesteal [default = 10]
-    "mean": 10,
+    // Average lifesteal [default = 5]
+    "mean": 5,
     // Standard deviation for the distribution [default = 10]
     "standardDeviation": 10
   },

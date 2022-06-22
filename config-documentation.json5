@@ -3,6 +3,10 @@
      in an Anvil to reroll attributes [default = minecraft:lapis_lazuli]
   */
   "rerollItem": "minecraft:lapis_lazuli",
+  /* Upgrade item.  Pair a weapon with this item in an Anvil to roll bonus attributes and only adds
+     stats onto the weapon if it is an upgrade [default = minecraft:diamond]
+  */
+  "upgradeItem": "minecraft:diamond",
   // Critical Hit attribute config
   "critConfig": {
     // Chance for a weapon to have critical hit property [0 = never, 1 = always] [default = 0.1]

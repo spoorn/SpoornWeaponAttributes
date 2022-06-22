@@ -1,7 +1,6 @@
 package org.spoorn.spoornweaponattributes.mixin;
 
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.NBT_KEY;
-import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.REROLL_NBT_KEY;
+import static org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -30,6 +29,9 @@ public class AnvilScreenHandlerMixin {
             if (root.getBoolean(REROLL_NBT_KEY)) {
                 SpoornWeaponAttributesUtil.rollAttributes(root);
                 root.remove(REROLL_NBT_KEY);
+            } else if (root.getBoolean(UPGRADE_NBT_KEY)) {
+                SpoornWeaponAttributesUtil.upgradeAttributes(root);
+                root.remove(UPGRADE_NBT_KEY);
             }
         }
     }
@@ -52,6 +54,19 @@ public class AnvilScreenHandlerMixin {
             this.repairItemUsage = 1;
             accessor.getOutput().setStack(0, output);
             ((ScreenHandlerAccessor) this).trySendContentUpdates();
+        } else {
+            swaStack = canUpgrade(input1, input2);
+            if (swaStack != null) {
+                ItemStack output = swaStack.copy();
+                NbtCompound root = output.getNbt();
+
+                root.putBoolean(UPGRADE_NBT_KEY, true);
+
+                this.levelCost.set(1);
+                this.repairItemUsage = 1;
+                accessor.getOutput().setStack(0, output);
+                ((ScreenHandlerAccessor) this).trySendContentUpdates();
+            }
         }
     }
     
@@ -59,6 +74,15 @@ public class AnvilScreenHandlerMixin {
         if (SpoornWeaponAttributesUtil.hasSWANbt(stack1) && SpoornWeaponAttributesUtil.isRerollItem(stack2)) {
             return stack1;
         } else if (SpoornWeaponAttributesUtil.hasSWANbt(stack2) && SpoornWeaponAttributesUtil.isRerollItem(stack1)) {
+            return stack2;
+        }
+        return null;
+    }
+    
+    private ItemStack canUpgrade(ItemStack stack1, ItemStack stack2) {
+        if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack1) && SpoornWeaponAttributesUtil.isUpgradeItem(stack2)) {
+            return stack1;
+        } else if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack2) && SpoornWeaponAttributesUtil.isUpgradeItem(stack1)) {
             return stack2;
         }
         return null;

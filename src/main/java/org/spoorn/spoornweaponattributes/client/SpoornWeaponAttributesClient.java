@@ -102,6 +102,18 @@ public class SpoornWeaponAttributesClient implements ClientModInitializer {
                     }
                 }
             }
+            
+            // Upgrades
+            if (stack.hasNbt()) {
+                NbtCompound root = stack.getNbt();
+                if (root.getBoolean(UPGRADE_NBT_KEY)) {
+                    if (adds == null) {
+                        adds = new ArrayList<>();
+                    }
+                    adds.add(new LiteralText(""));
+                    adds.add(new LiteralText("+++").formatted(Formatting.RED));
+                }
+            }
 
             if (adds != null && adds.size() > 1) {
                 // Add after the item name

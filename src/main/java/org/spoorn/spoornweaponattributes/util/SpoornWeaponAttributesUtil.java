@@ -8,9 +8,9 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 import org.spoorn.spoornweaponattributes.att.Attribute;
+import org.spoorn.spoornweaponattributes.att.Roller;
 import org.spoorn.spoornweaponattributes.config.Expressions;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
-import org.spoorn.spoornweaponattributes.config.attribute.*;
 import org.spoorn.spoornweaponattributes.entity.damage.SWAExplosionDamageSource;
 
 import java.util.Map;
@@ -25,6 +25,7 @@ public final class SpoornWeaponAttributesUtil {
 
     public static final String NBT_KEY = "swa3";
     public static final String REROLL_NBT_KEY = "swa3_reroll";
+    public static final String UPGRADE_NBT_KEY = "swa3_upgrade";
     public static final String BONUS_DAMAGE = "bonusDmg";
     public static final String DURATION = "dur";
     public static final String SLOW_DURATION = "slowDur";
@@ -47,6 +48,12 @@ public final class SpoornWeaponAttributesUtil {
         root.put(NBT_KEY, res);
         return res;
     }
+    
+    public static NbtCompound createAttributesSubNbtReturnRoot(NbtCompound root) {
+        NbtCompound res = new NbtCompound();
+        root.put(NBT_KEY, res);
+        return root;
+    }
 
     public static Optional<NbtCompound> getSWANbtIfPresent(ItemStack stack) {
         if (stack.hasNbt()) {
@@ -68,6 +75,15 @@ public final class SpoornWeaponAttributesUtil {
         Optional<Item> item = Registry.ITEM.getOrEmpty(new Identifier(rerollItem));
         if (item.isEmpty()) {
             throw new RuntimeException("Reroll item " + rerollItem + " was not found in the registry!");
+        }
+        return stack.getItem().equals(item.get());
+    }
+    
+    public static boolean isUpgradeItem(ItemStack stack) {
+        String upgradeItem = ModConfig.get().upgradeItem;
+        Optional<Item> item = Registry.ITEM.getOrEmpty(new Identifier(upgradeItem));
+        if (item.isEmpty()) {
+            throw new RuntimeException("Upgrade item " + upgradeItem + " was not found in the registry!");
         }
         return stack.getItem().equals(item.get());
     }
@@ -123,92 +139,106 @@ public final class SpoornWeaponAttributesUtil {
 
                 if (SpoornWeaponAttributesUtil.shouldEnable(att.chance)) {
                     NbtCompound newNbt = new NbtCompound();
+                    float bonusDamage;
                     switch (name) {
                         case Attribute.CRIT_NAME:
-                            handleCrit(newNbt);
+                            newNbt.putFloat(CRIT_CHANCE, Roller.rollCrit());
                             break;
                         case Attribute.FIRE_NAME:
-                            handleFire(newNbt);
+                            bonusDamage = Roller.rollFire();
+                            newNbt.putFloat(BONUS_DAMAGE, bonusDamage);
+                            newNbt.putFloat(DURATION, Roller.rollDamageDuration(Expressions.fireDuration, bonusDamage));
                             break;
                         case Attribute.COLD_NAME:
-                            handleCold(newNbt);
+                            bonusDamage = Roller.rollCold();
+                            newNbt.putFloat(BONUS_DAMAGE, bonusDamage);
+                            newNbt.putFloat(SLOW_DURATION, Roller.rollDamageDuration(Expressions.slowDuration, bonusDamage));
+                            newNbt.putFloat(FREEZE_DURATION, Roller.rollDamageDuration(Expressions.freezeDuration, bonusDamage));
                             break;
                         case Attribute.LIGHTNING_NAME:
-                            handleLightning(newNbt);
+                            newNbt.putFloat(BONUS_DAMAGE, Roller.rollLightning());
                             break;
                         case Attribute.POISON_NAME:
-                            handlePoison(newNbt);
+                            bonusDamage = Roller.rollPoison();
+                            newNbt.putFloat(BONUS_DAMAGE, bonusDamage);
+                            newNbt.putFloat(DURATION, Roller.rollDamageDuration(Expressions.poisonDuration, bonusDamage));
                             break;
                         case Attribute.LIFESTEAL_NAME:
-                            handleLifesteal(newNbt);
+                            newNbt.putFloat(LIFESTEAL, Roller.rollLifesteal());
                             break;
                         case Attribute.EXPLOSIVE_NAME:
-                            handleExplosive(newNbt);
+                            newNbt.putFloat(EXPLOSION_CHANCE, Roller.rollExplosive());
                             break;
                         default:
                             // do nothing
+                            log.error("Unknown SpoornWeaponAttribute: {}", name);
                     }
                     nbt.put(name, newNbt);
                 }
             }
-
             //System.out.println("Updated Nbt: " + nbt);
         }
     }
+    
+    // Upgrade stats if applicable
+    public static void upgradeAttributes(NbtCompound root) {
+        if (!root.contains(SPOORN_LOOT_NBT_KEY)) {
+            if (!root.contains(SpoornWeaponAttributesUtil.NBT_KEY)) {
+                SpoornWeaponAttributesUtil.createAttributesSubNbtReturnRoot(root);
+            }
+            NbtCompound nbt = root.getCompound(SpoornWeaponAttributesUtil.NBT_KEY);
 
-    /**
-     * We manually list all the handles here for optimal latency
-     */
+            for (Map.Entry<String, Attribute> entry : Attribute.VALUES.entrySet()) {
+                String name = entry.getKey();
+                Attribute att = entry.getValue();
 
-    private static void handleCrit(NbtCompound nbt) {
-        CritConfig config = ModConfig.get().critConfig;
-        float critChance = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minCritChance, config.maxCritChance);
-        if (config.useGaussian) {
-            critChance /= 100;
+                if (SpoornWeaponAttributesUtil.shouldEnable(att.chance)) {
+                    NbtCompound newNbt = nbt.contains(name) ? nbt.getCompound(name) : new NbtCompound();
+                    
+                    float bonusDamage;
+                    switch (name) {
+                        case Attribute.CRIT_NAME:
+                            checkFloatUpgradeThenAdd(newNbt, CRIT_CHANCE, Roller.rollCrit());
+                            break;
+                        case Attribute.FIRE_NAME:
+                            bonusDamage = Roller.rollFire();
+                            checkFloatUpgradeThenAdd(newNbt, BONUS_DAMAGE, bonusDamage);
+                            checkFloatUpgradeThenAdd(newNbt, DURATION, Roller.rollDamageDuration(Expressions.fireDuration, bonusDamage));
+                            break;
+                        case Attribute.COLD_NAME:
+                            bonusDamage = Roller.rollCold();
+                            checkFloatUpgradeThenAdd(newNbt, BONUS_DAMAGE, bonusDamage);
+                            checkFloatUpgradeThenAdd(newNbt, SLOW_DURATION, Roller.rollDamageDuration(Expressions.slowDuration, bonusDamage));
+                            checkFloatUpgradeThenAdd(newNbt, FREEZE_DURATION, Roller.rollDamageDuration(Expressions.freezeDuration, bonusDamage));
+                            break;
+                        case Attribute.LIGHTNING_NAME:
+                            checkFloatUpgradeThenAdd(newNbt, BONUS_DAMAGE, Roller.rollLightning());
+                            break;
+                        case Attribute.POISON_NAME:
+                            bonusDamage = Roller.rollPoison();
+                            checkFloatUpgradeThenAdd(newNbt, BONUS_DAMAGE, bonusDamage);
+                            checkFloatUpgradeThenAdd(newNbt, DURATION, Roller.rollDamageDuration(Expressions.poisonDuration, bonusDamage));
+                            break;
+                        case Attribute.LIFESTEAL_NAME:
+                            checkFloatUpgradeThenAdd(newNbt, LIFESTEAL, Roller.rollLifesteal());
+                            break;
+                        case Attribute.EXPLOSIVE_NAME:
+                            checkFloatUpgradeThenAdd(newNbt, EXPLOSION_CHANCE, Roller.rollExplosive());
+                            break;
+                        default:
+                            // do nothing
+                            log.error("Unknown SpoornWeaponAttribute: {}", name);
+                    }
+                    nbt.put(name, newNbt);
+                }
+            }
+            //System.out.println("Updated Nbt: " + nbt);
         }
-        nbt.putFloat(CRIT_CHANCE, critChance);
     }
-
-    private static void handleFire(NbtCompound nbt) {
-        FireConfig config = ModConfig.get().fireConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-        float duration = (float) Expressions.fireDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(DURATION, duration);
-    }
-
-    private static void handleCold(NbtCompound nbt) {
-        ColdConfig config = ModConfig.get().coldConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-        float slowDuration = (float) Expressions.slowDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(SLOW_DURATION, slowDuration);
-        float freezeDuration = (float) Expressions.freezeDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(FREEZE_DURATION, freezeDuration);
-    }
-
-    private static void handleLightning(NbtCompound nbt) {
-        LightningConfig config = ModConfig.get().lightningConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-    }
-
-    private static void handlePoison(NbtCompound nbt) {
-        PoisonConfig config = ModConfig.get().poisonConfig;
-        float bonusDamage = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
-        nbt.putFloat(BONUS_DAMAGE, bonusDamage);
-        float duration = (float) Expressions.poisonDuration.setVariable(Expressions.DAMAGE_VAR, bonusDamage).evaluate();
-        nbt.putFloat(DURATION, duration);
-    }
-
-    private static void handleLifesteal(NbtCompound nbt) {
-        LifestealConfig config = ModConfig.get().lifestealConfig;
-        float lifesteal = SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config. maxLifesteal);
-        nbt.putFloat(LIFESTEAL, lifesteal);
-    }
-
-    private static void handleExplosive(NbtCompound nbt) {
-        ExplosiveConfig config = ModConfig.get().explosiveConfig;
-        nbt.putFloat(EXPLOSION_CHANCE, (float) config.explosionChance);
+    
+    private static void checkFloatUpgradeThenAdd(NbtCompound nbt, String attribute, float newValue) {
+        if (!nbt.contains(attribute) || nbt.getFloat(attribute) < newValue) {
+            nbt.putFloat(attribute, newValue);
+        }
     }
 }

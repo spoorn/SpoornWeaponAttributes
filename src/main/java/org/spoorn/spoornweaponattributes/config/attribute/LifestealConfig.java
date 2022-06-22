@@ -17,8 +17,9 @@ public class LifestealConfig {
             "value between the minDamage and maxDamage [default = true]")
     public boolean useGaussian = true;
 
-    @Comment("Average lifesteal [default = 10]")
-    public int mean = 10;
+    // The default mean and sd make it so there's a ~6.68% chance of above 20% lifesteal
+    @Comment("Average lifesteal [default = 5]")
+    public int mean = 5;
 
     @Comment("Standard deviation for the distribution [default = 10]")
     public int standardDeviation = 10;

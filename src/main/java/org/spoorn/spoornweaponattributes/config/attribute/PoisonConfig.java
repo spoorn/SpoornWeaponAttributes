@@ -20,10 +20,11 @@ public class PoisonConfig {
             "value between the minDamage and maxDamage [default = true]")
     public boolean useGaussian = true;
 
-    // The default mean and sd makes it so  there's a ~15% chance of getting above 5 damage
+    // The default mean and sd makes it so  there's a ~5.48% chance of getting above 5 damage
+    // Use https://onlinestatbook.com/2/calculators/normal_dist.html
     @Comment("Average damage [default = 1]")
     public int mean = 1;
 
-    @Comment("Standard deviation for the distribution [default = 4]")
-    public int standardDeviation = 4;
+    @Comment("Standard deviation for the distribution [default = 2.5]")
+    public double standardDeviation = 2.5;
 }

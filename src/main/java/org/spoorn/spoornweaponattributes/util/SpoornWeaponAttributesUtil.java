@@ -126,6 +126,16 @@ public final class SpoornWeaponAttributesUtil {
         return nextGaussian;
     }
     
+    public static void rollOrUpgradeNbt(NbtCompound root) {
+        if (root.getBoolean(UPGRADE_NBT_KEY)) {
+            SpoornWeaponAttributesUtil.upgradeAttributes(root);
+            root.remove(UPGRADE_NBT_KEY);
+        } else if (root.getBoolean(REROLL_NBT_KEY)) {
+            SpoornWeaponAttributesUtil.rollAttributes(root);
+            root.remove(REROLL_NBT_KEY);
+        }
+    }
+    
     
     // Apply attributes
     public static void rollAttributes(NbtCompound root) {

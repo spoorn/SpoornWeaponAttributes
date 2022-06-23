@@ -28,13 +28,6 @@ ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.spoornweaponattributes]]
-modId = "architectury"
-mandatory = false
-versionRange = "[5.6.22,)"
-ordering = "AFTER"
-side = "BOTH"
-
-[[dependencies.spoornweaponattributes]]
 modId = "cloth_config"
 mandatory = true
 versionRange = "[6,)"

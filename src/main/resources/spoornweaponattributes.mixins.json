@@ -9,7 +9,8 @@
     "ForgingScreenHandlerAccessor",
     "ScreenHandlerAccessor",
     "AnvilScreenHandlerMixin",
-    "ExplosionMixin"
+    "ExplosionMixin",
+    "ForgingScreenHandlerMixin"
   ],
   "client": [
   ],

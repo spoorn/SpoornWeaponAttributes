@@ -69,7 +69,8 @@ public class AnvilScreenHandlerMixin {
         if (swaStack != null) {
             ItemStack output = swaStack.copy();
             NbtCompound root = output.getNbt();
-            root.remove(NBT_KEY);  // This will cause a reroll no matter what
+            // This will cause a reroll no matter what.  We could do the same thing with Upgrading in the future if it's simpler than the mixin in ForgingScreenHandlerMixin
+            root.remove(NBT_KEY);
             root.putBoolean(REROLL_NBT_KEY, true);
 
             this.levelCost.set(ModConfig.get().rerollLevelCost);

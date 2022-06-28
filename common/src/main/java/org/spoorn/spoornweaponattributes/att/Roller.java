@@ -23,27 +23,27 @@ public class Roller {
     
     public static float rollFire() {
         FireConfig config = ModConfig.get().fireConfig;
-        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config.maxDamage);
     }
     
     public static float rollCold() {
         ColdConfig config = ModConfig.get().coldConfig;
-        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config.maxDamage);
     }
     
     public static float rollLightning() {
         LightningConfig config = ModConfig.get().lightningConfig;
-        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config.maxDamage);
     }
     
     public static float rollPoison() {
         PoisonConfig config = ModConfig.get().poisonConfig;
-        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config. maxDamage);
+        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minDamage, config.maxDamage);
     }
     
     public static float rollLifesteal() {
         LifestealConfig config = ModConfig.get().lifestealConfig;
-        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config. maxLifesteal);
+        return SpoornWeaponAttributesUtil.drawRandom(config.useGaussian, config.mean, config.standardDeviation, config.minLifesteal, config.maxLifesteal);
     }
     
     public static float rollExplosive() {

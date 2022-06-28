@@ -13,6 +13,10 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
+/**
+ * Note: If all this code starts running into problems, we can migrate to using inventoryTicks, like we did with rerolls
+ * in AnvilScreenHandlerMixin - by removing the NBT_KEY and triggering rerolls/upgrades during the inventoryTick.
+ */
 @Mixin(ForgingScreenHandler.class)
 public class ForgingScreenHandlerMixin {
     

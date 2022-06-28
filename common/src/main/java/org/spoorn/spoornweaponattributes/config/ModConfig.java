@@ -14,10 +14,16 @@ public class ModConfig implements ConfigData {
     @Comment("Reroll item.  Pair a weapon with Spoorn Weapon Attributes on it with this item (vanilla or modded)\n" +
             "in an Anvil to reroll attributes [default = minecraft:lapis_lazuli]")
     public String rerollItem = "minecraft:lapis_lazuli";
+
+    @Comment("Reroll level cost [default = 0]")
+    public int rerollLevelCost = 0;
     
     @Comment("Upgrade item.  Pair a weapon with this item in an Anvil to roll bonus attributes and only adds\n" +
             "stats onto the weapon if it is an upgrade [default = minecraft:diamond]")
     public String upgradeItem = "minecraft:diamond";
+
+    @Comment("Upgrade level cost [default = 1]")
+    public int upgradeLevelCost = 1;
 
     @Comment("Critical Hit attribute config")
     public CritConfig critConfig = new CritConfig();

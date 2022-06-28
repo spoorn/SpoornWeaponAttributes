@@ -14,6 +14,8 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 @Mixin(AnvilScreenHandler.class)
@@ -70,7 +72,7 @@ public class AnvilScreenHandlerMixin {
             root.remove(NBT_KEY);
             root.putBoolean(REROLL_NBT_KEY, true);
 
-            this.levelCost.set(1);
+            this.levelCost.set(ModConfig.get().rerollLevelCost);
             this.repairItemUsage = 1;
             accessor.getOutput().setStack(0, output);
             ((ScreenHandlerAccessor) this).trySendContentUpdates();
@@ -82,11 +84,25 @@ public class AnvilScreenHandlerMixin {
 
                 root.putBoolean(UPGRADE_NBT_KEY, true);
 
-                this.levelCost.set(1);
+                this.levelCost.set(ModConfig.get().upgradeLevelCost);
                 this.repairItemUsage = 1;
                 accessor.getOutput().setStack(0, output);
                 ((ScreenHandlerAccessor) this).trySendContentUpdates();
             }
+        }
+    }
+
+    @Inject(method = "canTakeOutput", at = @At(value = "HEAD"), cancellable = true)
+    private void allowNoLevelCost(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
+        ForgingScreenHandlerAccessor accessor = (ForgingScreenHandlerAccessor) this;
+        Inventory inputInventory = accessor.getInput();
+        ItemStack input1 = inputInventory.getStack(0);
+        ItemStack input2 = inputInventory.getStack(1);
+
+        if ((canReroll(input1, input2) != null && ModConfig.get().rerollLevelCost <= 0)
+                || (canUpgrade(input1, input2) != null && ModConfig.get().upgradeLevelCost <= 0)) {
+            cir.setReturnValue(player.getAbilities().creativeMode || player.experienceLevel >= this.levelCost.get());
+            cir.cancel();
         }
     }
 

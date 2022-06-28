@@ -4,7 +4,8 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 
 public class ExplosiveConfig {
 
-    @Comment("Chance for a weapon to be Explosive [0 = never, 1 = always] [default = 0.02]")
+    @Comment("Chance for a weapon to be Explosive [0 = never, 1 = always] [default = 0.02]\n" +
+            "The explosion by default does not hurt other players.")
     public double attributeChance = 0.02;
 
     @Comment("Chance for each attack to cause an explosion [0 = never, 1 = always] [default = 1.0]")

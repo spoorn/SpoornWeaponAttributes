@@ -131,6 +131,7 @@ public final class SpoornWeaponAttributesUtil {
             SpoornWeaponAttributesUtil.upgradeAttributes(root);
             root.remove(UPGRADE_NBT_KEY);
         } else if (root.getBoolean(REROLL_NBT_KEY)) {
+            // Technically this is redundant as AnvilScreenHandlerMixin removes the NBT_KEY causing a reroll as soon as the item ticks in an inventory
             SpoornWeaponAttributesUtil.rollAttributes(root);
             root.remove(REROLL_NBT_KEY);
         }

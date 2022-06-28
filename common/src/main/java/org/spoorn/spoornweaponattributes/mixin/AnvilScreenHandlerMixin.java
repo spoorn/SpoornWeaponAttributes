@@ -69,7 +69,7 @@ public class AnvilScreenHandlerMixin {
         if (swaStack != null) {
             ItemStack output = swaStack.copy();
             NbtCompound root = output.getNbt();
-            root.remove(NBT_KEY);
+            root.remove(NBT_KEY);  // This will cause a reroll no matter what
             root.putBoolean(REROLL_NBT_KEY, true);
 
             this.levelCost.set(ModConfig.get().rerollLevelCost);

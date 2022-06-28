@@ -59,6 +59,7 @@ processResources {
 shadowJar {
     exclude "fabric.mod.json"
     exclude "architectury.common.json"
+    relocate "net.objecthunter.exp4j", "${rootProject.maven_group}.spoornweaponattributes.shadowed.net.objecthunter.exp4j"
 
     configurations = [project.configurations.shadowCommon]
     classifier "dev-shadow"

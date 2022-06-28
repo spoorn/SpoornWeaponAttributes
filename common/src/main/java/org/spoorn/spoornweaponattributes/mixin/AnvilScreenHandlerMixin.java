@@ -32,7 +32,7 @@ public class AnvilScreenHandlerMixin {
      * @param ci
      */
     @Inject(method = "onTakeOutput", at = @At(value = "HEAD"))
-    private void reroll(PlayerEntity player, ItemStack output, CallbackInfo ci) {
+    private void rerollSWA(PlayerEntity player, ItemStack output, CallbackInfo ci) {
         ForgingScreenHandlerAccessor accessor = (ForgingScreenHandlerAccessor) this;
         Inventory inputInventory = accessor.getInput();
         ItemStack input1 = inputInventory.getStack(0);
@@ -50,7 +50,7 @@ public class AnvilScreenHandlerMixin {
         // First slot should be the weapon, 2nd slot should be the upgrade item
         // This prevents the wrong order from deleting the entire stack of the upgrade item
         ItemStack weapon;
-        if ((weapon = canUpgrade(input1, input2)) != null || (weapon = canReroll(input1, input2)) != null) {
+        if ((weapon = canUpgradeSWA(input1, input2)) != null || (weapon = canRerollSWA(input1, input2)) != null) {
             ItemStack temp = weapon == input1 ? input2 : input1;
             // Swap if in wrong order
             inputInventory.setStack(0, weapon);
@@ -59,13 +59,13 @@ public class AnvilScreenHandlerMixin {
     }
 
     @Inject(method = "updateResult", at = @At(value = "RETURN"))
-    private void addRerolls(CallbackInfo ci) {
+    private void addRerollsSWA(CallbackInfo ci) {
         ForgingScreenHandlerAccessor accessor = (ForgingScreenHandlerAccessor) this;
         Inventory inputInventory = accessor.getInput();
         ItemStack input1 = inputInventory.getStack(0);
         ItemStack input2 = inputInventory.getStack(1);
 
-        ItemStack swaStack = canReroll(input1, input2);
+        ItemStack swaStack = canRerollSWA(input1, input2);
         if (swaStack != null) {
             ItemStack output = swaStack.copy();
             NbtCompound root = output.getNbt();
@@ -78,7 +78,7 @@ public class AnvilScreenHandlerMixin {
             accessor.getOutput().setStack(0, output);
             ((ScreenHandlerAccessor) this).trySendContentUpdates();
         } else {
-            swaStack = canUpgrade(input1, input2);
+            swaStack = canUpgradeSWA(input1, input2);
             if (swaStack != null) {
                 ItemStack output = swaStack.copy();
                 NbtCompound root = output.getNbt();
@@ -94,20 +94,21 @@ public class AnvilScreenHandlerMixin {
     }
 
     @Inject(method = "canTakeOutput", at = @At(value = "HEAD"), cancellable = true)
-    private void allowNoLevelCost(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
+    private void allowNoLevelCostSWA(PlayerEntity player, boolean present, CallbackInfoReturnable<Boolean> cir) {
         ForgingScreenHandlerAccessor accessor = (ForgingScreenHandlerAccessor) this;
         Inventory inputInventory = accessor.getInput();
         ItemStack input1 = inputInventory.getStack(0);
         ItemStack input2 = inputInventory.getStack(1);
 
-        if ((canReroll(input1, input2) != null && ModConfig.get().rerollLevelCost <= 0)
-                || (canUpgrade(input1, input2) != null && ModConfig.get().upgradeLevelCost <= 0)) {
+        if ((canRerollSWA(input1, input2) != null && ModConfig.get().rerollLevelCost <= 0)
+                || (canUpgradeSWA(input1, input2) != null && ModConfig.get().upgradeLevelCost <= 0)) {
             cir.setReturnValue(player.getAbilities().creativeMode || player.experienceLevel >= this.levelCost.get());
             cir.cancel();
         }
     }
 
-    private ItemStack canReroll(ItemStack stack1, ItemStack stack2) {
+    // Below methods need to have different names than SpoornArmorAttributes
+    private ItemStack canRerollSWA(ItemStack stack1, ItemStack stack2) {
         if (SpoornWeaponAttributesUtil.hasSWANbt(stack1) && SpoornWeaponAttributesUtil.isRerollItem(stack2)) {
             return stack1;
         } else if (SpoornWeaponAttributesUtil.hasSWANbt(stack2) && SpoornWeaponAttributesUtil.isRerollItem(stack1)) {
@@ -116,7 +117,7 @@ public class AnvilScreenHandlerMixin {
         return null;
     }
 
-    private ItemStack canUpgrade(ItemStack stack1, ItemStack stack2) {
+    private ItemStack canUpgradeSWA(ItemStack stack1, ItemStack stack2) {
         if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack1) && SpoornWeaponAttributesUtil.isUpgradeItem(stack2)) {
             return stack1;
         } else if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack2) && SpoornWeaponAttributesUtil.isUpgradeItem(stack1)) {

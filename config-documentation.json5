@@ -3,10 +3,14 @@
      in an Anvil to reroll attributes [default = minecraft:lapis_lazuli]
   */
   "rerollItem": "minecraft:lapis_lazuli",
+  // Reroll level cost [default = 0]
+  "rerollLevelCost": 0,
   /* Upgrade item.  Pair a weapon with this item in an Anvil to roll bonus attributes and only adds
      stats onto the weapon if it is an upgrade [default = minecraft:diamond]
   */
   "upgradeItem": "minecraft:diamond",
+  // Upgrade level cost [default = 1]
+  "upgradeLevelCost": 1,
   // Critical Hit attribute config
   "critConfig": {
     // Chance for a weapon to have critical hit property [0 = never, 1 = always] [default = 0.1]
@@ -125,7 +129,9 @@
   },
   // Explosive attribute config
   "explosiveConfig": {
-    // Chance for a weapon to be Explosive [0 = never, 1 = always] [default = 0.02]
+    /* Chance for a weapon to be Explosive [0 = never, 1 = always] [default = 0.02]
+       The explosion by default does not hurt other players.
+    */
     "attributeChance": 0.02,
     // Chance for each attack to cause an explosion [0 = never, 1 = always] [default = 1.0]
     "explosionChance": 1.0,

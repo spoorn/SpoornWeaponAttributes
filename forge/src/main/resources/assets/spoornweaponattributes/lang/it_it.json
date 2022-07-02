@@ -1,0 +1,10 @@
+{
+  "swa.tooltip.firedamage" : " Fuoco",
+  "swa.tooltip.colddamage" : " Freddo",
+  "swa.tooltip.critchance" : " Critico",
+  "swa.tooltip.lightningdamage" : " Elettrico",
+  "swa.tooltip.poisondamage" : " Veleno",
+  "swa.tooltip.lifesteal": " Assorbimento",
+  "swa.tooltip.explosive" : "Esplosivo",
+  "swa.tooltip.explosiveprepend" : "Booooom!"
+}

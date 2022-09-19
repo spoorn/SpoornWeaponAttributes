@@ -25,6 +25,9 @@ public class ModConfig implements ConfigData {
     @Comment("Upgrade level cost [default = 1]")
     public int upgradeLevelCost = 1;
 
+    @Comment("Apply Attributes Automatically on Inventory Tick [default = true]")
+    public boolean applyOnInventoryTick = true;
+
     @Comment("Critical Hit attribute config")
     public CritConfig critConfig = new CritConfig();
 

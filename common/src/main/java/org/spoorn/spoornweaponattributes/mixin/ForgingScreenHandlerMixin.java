@@ -39,7 +39,7 @@ public class ForgingScreenHandlerMixin {
      * {@link AnvilScreenHandlerMixin} to not properly apply the attribute logic.  Instead, this transferSlot() is called here.
      */
     @Inject(method = "quickMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ForgingScreenHandler;insertItem(Lnet/minecraft/item/ItemStack;IIZ)Z", ordinal = 0))
-    private void test(PlayerEntity player, int index, CallbackInfoReturnable<ItemStack> cir) {
+    private void swaRollOrUpgradeShiftClick(PlayerEntity player, int index, CallbackInfoReturnable<ItemStack> cir) {
         if ((Object)this instanceof AnvilScreenHandler && originalTransferSlotItemStack != null) {
             ItemStack output = originalTransferSlotItemStack;
             // index == 2 when transferring from output to player inventory

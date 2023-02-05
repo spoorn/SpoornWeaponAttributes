@@ -24,7 +24,7 @@ public class ForgingScreenHandlerMixin {
     // the player Id in case this someday needs to be thread safe
     private static ItemStack originalTransferSlotItemStack;
     
-    @Redirect(method = "transferSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;copy()Lnet/minecraft/item/ItemStack;"))
+    @Redirect(method = "quickMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;copy()Lnet/minecraft/item/ItemStack;"))
     private ItemStack saveSlotItemStack(ItemStack instance) {
         ItemStack res = instance.copy();
         if ((Object)this instanceof AnvilScreenHandler) {
@@ -38,7 +38,7 @@ public class ForgingScreenHandlerMixin {
      * instead of a simple Left Click, slot.onTakeItem() will be called with an empty ItemStack which causes the code in
      * {@link AnvilScreenHandlerMixin} to not properly apply the attribute logic.  Instead, this transferSlot() is called here.
      */
-    @Inject(method = "transferSlot", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ForgingScreenHandler;insertItem(Lnet/minecraft/item/ItemStack;IIZ)Z", ordinal = 0))
+    @Inject(method = "quickMove", at = @At(value = "INVOKE", target = "Lnet/minecraft/screen/ForgingScreenHandler;insertItem(Lnet/minecraft/item/ItemStack;IIZ)Z", ordinal = 0))
     private void test(PlayerEntity player, int index, CallbackInfoReturnable<ItemStack> cir) {
         if ((Object)this instanceof AnvilScreenHandler && originalTransferSlotItemStack != null) {
             ItemStack output = originalTransferSlotItemStack;

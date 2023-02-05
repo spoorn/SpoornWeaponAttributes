@@ -216,7 +216,7 @@ public class PlayerEntityMixin {
             ExplosiveConfig config = ModConfig.get().explosiveConfig;
             if (SpoornWeaponAttributesUtil.shouldEnable(explosionChance) && !target.world.isClient()) {
                 target.world.createExplosion(target, SWA_EXPLOSION_DAMAGE_SOURCE, null, target.getX(), target.getY(), target.getZ(),
-                        (float) config.explosionPower, config.causeFires, config.breakBlocks ? Explosion.DestructionType.BREAK : Explosion.DestructionType.NONE);
+                        (float) config.explosionPower, config.causeFires, config.breakBlocks ? World.ExplosionSourceType.TNT : World.ExplosionSourceType.NONE);
             }
         }
         return damage;

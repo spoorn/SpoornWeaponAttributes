@@ -17,6 +17,7 @@ public class ExplosiveConfig {
     @Comment("True if explosions should cause fires, else false [default = false]")
     public boolean causeFires = false;
 
-    @Comment("True if explosions should break blocks [default = false]")
+    @Comment("True if explosions should break blocks.  This mimics TNT explosions, so if you have gamerules to prevent " +
+            "TNT explosions, blocks will not be broken. [default = false]")
     public boolean breakBlocks = false;
 }

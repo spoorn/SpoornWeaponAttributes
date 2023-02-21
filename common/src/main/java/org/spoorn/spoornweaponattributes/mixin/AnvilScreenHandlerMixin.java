@@ -81,7 +81,9 @@ public class AnvilScreenHandlerMixin {
             
             NbtCompound root = output.getNbt();
             // This will cause a reroll no matter what.  We could do the same thing with Upgrading in the future if it's simpler than the mixin in ForgingScreenHandlerMixin
-            root.remove(NBT_KEY);
+            if (root.contains(NBT_KEY)) {
+                root.remove(NBT_KEY);
+            }
             root.putBoolean(REROLL_NBT_KEY, true);
 
             if (!useExistingOutput) {
@@ -135,9 +137,9 @@ public class AnvilScreenHandlerMixin {
 
     // Below methods need to have different names than SpoornArmorAttributes
     private ItemStack canRerollSWA(ItemStack stack1, ItemStack stack2) {
-        if (SpoornWeaponAttributesUtil.hasSWANbt(stack1) && SpoornWeaponAttributesUtil.isRerollItem(stack2)) {
+        if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack1) && SpoornWeaponAttributesUtil.isRerollItem(stack2)) {
             return stack1;
-        } else if (SpoornWeaponAttributesUtil.hasSWANbt(stack2) && SpoornWeaponAttributesUtil.isRerollItem(stack1)) {
+        } else if (SpoornWeaponAttributesUtil.shouldTryGenAttr(stack2) && SpoornWeaponAttributesUtil.isRerollItem(stack1)) {
             return stack2;
         }
         return null;

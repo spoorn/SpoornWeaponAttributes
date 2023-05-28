@@ -10,7 +10,7 @@
   "contact": {
     "website": "https://www.curseforge.com/minecraft/mc-mods/spoorn-weapon-attributes"
   },
-  "license": "LGPL-3.0",
+  "license": "MIT",
   "icon": "assets/spoornweaponattributes/icon.png",
   "environment": "*",
   "entrypoints": {

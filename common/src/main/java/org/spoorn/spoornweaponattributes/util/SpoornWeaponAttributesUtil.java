@@ -33,8 +33,6 @@ public final class SpoornWeaponAttributesUtil {
     public static final String CRIT_CHANCE = "critChance";
     public static final String LIFESTEAL = "lifesteal";
     public static final String EXPLOSION_CHANCE = "explosionChance";
-    private static final String EXPLOSION_DAMAGE_SOURCE_ID = "swa.explosion";
-    public static final SWAExplosionDamageSource SWA_EXPLOSION_DAMAGE_SOURCE = new SWAExplosionDamageSource(EXPLOSION_DAMAGE_SOURCE_ID);
     public static final Random RANDOM = new Random();
 
     public static final String SPOORN_LOOT_NBT_KEY = "spoornConfig";

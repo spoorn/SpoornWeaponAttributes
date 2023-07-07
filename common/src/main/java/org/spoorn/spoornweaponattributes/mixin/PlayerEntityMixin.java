@@ -8,11 +8,13 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageTypes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
@@ -22,6 +24,7 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spoorn.spoornweaponattributes.att.Attribute;
 import org.spoorn.spoornweaponattributes.config.ModConfig;
 import org.spoorn.spoornweaponattributes.config.attribute.ExplosiveConfig;
+import org.spoorn.spoornweaponattributes.entity.damage.SWAExplosionDamageSource;
 import org.spoorn.spoornweaponattributes.util.SpoornWeaponAttributesUtil;
 
 import java.util.Map.Entry;
@@ -161,7 +164,7 @@ public class PlayerEntityMixin {
     private float handleLightning(NbtCompound nbt, PlayerEntity player, Entity target) {
         double lightningStrikeChance = ModConfig.get().lightningConfig.lightningStrikeChance;
         if (SpoornWeaponAttributesUtil.shouldEnable(lightningStrikeChance)) {
-            World world = target.world;
+            World world = target.getWorld();
             LightningEntity lightningEntity = EntityType.LIGHTNING_BOLT.create(world);
             lightningEntity.teleport(target.getX(), target.getY(), target.getZ());
             world.spawnEntity(lightningEntity);
@@ -214,8 +217,10 @@ public class PlayerEntityMixin {
         if (nbt.contains(EXPLOSION_CHANCE)) {
             float explosionChance = nbt.getFloat(EXPLOSION_CHANCE);
             ExplosiveConfig config = ModConfig.get().explosiveConfig;
-            if (SpoornWeaponAttributesUtil.shouldEnable(explosionChance) && !target.world.isClient()) {
-                target.world.createExplosion(target, SWA_EXPLOSION_DAMAGE_SOURCE, null, target.getX(), target.getY(), target.getZ(),
+            if (SpoornWeaponAttributesUtil.shouldEnable(explosionChance) && !target.getWorld().isClient()) {
+                target.getWorld().createExplosion(target, new SWAExplosionDamageSource(
+                        target.getWorld().getRegistryManager().get(RegistryKeys.DAMAGE_TYPE).getEntry(player.getDamageSources().explosion(player, target).getType())), 
+                        null, target.getX(), target.getY(), target.getZ(),
                         (float) config.explosionPower, config.causeFires, config.breakBlocks ? World.ExplosionSourceType.TNT : World.ExplosionSourceType.NONE);
             }
         }
